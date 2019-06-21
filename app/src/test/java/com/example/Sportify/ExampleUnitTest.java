@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.Sportify;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.Sportify;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
