@@ -19,12 +19,17 @@ public class Post {
     }
 
     public Post(String author, String text,Date creationDate, String picture, List<String> likers, List<Comment> comments) {
+        this.mId = java.util.UUID.randomUUID().toString();
         this.mAuthor = author;
         this.mText = text;
         this.mCreationDate = creationDate;
         this.mPicture = picture;
         this.mLikers = likers;
         this.mComments = comments;
+    }
+
+    public String getId(){
+        return this.mId;
     }
 
     public String getAuthor(){

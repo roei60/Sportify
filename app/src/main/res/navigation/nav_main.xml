@@ -39,13 +39,53 @@
         android:label=""
         tools:layout="@layout/fragment_register">
         <action
-            android:id="@+id/action_registerFragment_to_cardsListFragment"
-            app:destination="@id/registerFragment"
-            app:popUpTo="@+id/nav_main"
-            app:popUpToInclusive="true"  />
-          <!--  app:destination="@id/cardsListFragment"-->
+            android:id="@+id/action_registerFragment_to_postsListFragment"
+            app:destination="@id/postsListFragment" />
+        <!--  app:destination="@id/cardsListFragment"-->
 
 
+    </fragment>
+    <fragment
+        android:id="@+id/postsListFragment"
+        android:name="com.example.Sportify.Activities.PostsListFragment"
+        android:label="fragment_posts_list"
+        tools:layout="@layout/fragment_posts_list" >
+        <action
+            android:id="@+id/action_postsListFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_postsListFragment_to_commentsFragment"
+            app:destination="@id/commentsFragment" />
+        <action
+            android:id="@+id/action_postsListFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.Sportify.Activities.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentsFragment"
+        android:name="com.example.Sportify.Activities.CommentsFragment"
+        android:label="fragment_comments"
+        tools:layout="@layout/fragment_comments" >
+        <action
+            android:id="@+id/action_commentsFragment_to_postsListFragment"
+            app:destination="@id/postsListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postFragment"
+        android:name="com.example.Sportify.Activities.PostFragment"
+        android:label="fragment_post"
+        tools:layout="@layout/fragment_post" >
+        <action
+            android:id="@+id/action_postFragment_to_postsListFragment"
+            app:destination="@id/postsListFragment" />
     </fragment>
     <!--
     <fragment

@@ -13,13 +13,14 @@ import com.example.Sportify.R;
 import com.example.Sportify.models.Post;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
 import java.util.Vector;
 
 public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostRowViewHolder>{
-    public static Vector<Post> mData;
+    public static List<Post> mData;
     OnItemClickListener mListener;
 
-    public PostsListAdapter(Vector<Post> data) {
+    public PostsListAdapter(List<Post> data) {
         mData = data;
     }
 
@@ -41,7 +42,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
     @Override
     public void onBindViewHolder(@NonNull PostRowViewHolder postRowViewHolder, int i) {
-        Post post = mData.elementAt(i);
+        Post post = mData.get(i);
         postRowViewHolder.bind(post);
     }
 

@@ -232,7 +232,7 @@ public class RegisterFragment extends Fragment {
                                 mProgressDialog.dismiss();
                                 //register completed and logged in.
                                 Toast.makeText(getActivity(), "Sign In Successfull!", Toast.LENGTH_LONG).show();
-                                Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_cardsListFragment);
+                                Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_postsListFragment);
                             } else {
                                 mProgressDialog.dismiss();
                                 Toast.makeText(getActivity(), "Sign in Failed! pls try again later...", Toast.LENGTH_LONG).show();
@@ -296,7 +296,7 @@ public class RegisterFragment extends Fragment {
         mProgressDialog.dismiss();
         //register completed and logged in.
         Toast.makeText(getActivity(), "Registeraion Successfull!", Toast.LENGTH_LONG).show();
-        Navigation.findNavController(this.getView()).navigate(R.id.action_registerFragment_to_cardsListFragment);
+        Navigation.findNavController(this.getView()).navigate(R.id.action_registerFragment_to_postsListFragment);
     }
 
     @Override
