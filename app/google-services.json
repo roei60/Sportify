@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "547375281251-o7in54ukitqa59qrfl18h9q6siqspblv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.Sportify",
+            "certificate_hash": "ff6ddb77d2dd512eee4f6d9a7b209393f67e418b"
+          }
+        },
+        {
           "client_id": "547375281251-ieq8t8fomj42k4gou6ipu1pu8lie5skm.apps.googleusercontent.com",
           "client_type": 3
         }

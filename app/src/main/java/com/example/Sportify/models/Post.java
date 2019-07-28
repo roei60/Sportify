@@ -14,6 +14,10 @@ public class Post {
     private List<Comment> mComments;
     private Date mCreationDate;
 
+    public Post(){
+        // Need empty ctor for deserialization from DB
+    }
+
     public Post(String author, String text, Date creationDate) {
         this(author, text, creationDate, null, new ArrayList<String>(), new ArrayList<Comment>());
     }
@@ -28,12 +32,18 @@ public class Post {
         this.mComments = comments;
     }
 
+    public void setId(String id){
+        this.mId = id;
+    }
     public String getId(){
         return this.mId;
     }
 
     public String getAuthor(){
         return this.mAuthor;
+    }
+    public void setAuthor(String author){
+        this.mAuthor = author;
     }
 
     public String getText() {

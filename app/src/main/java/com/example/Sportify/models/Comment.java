@@ -9,6 +9,10 @@ public class Comment {
     private String mText; // actual comment text
     private Date mCreationDate;
 
+    public Comment(){
+        // Need empty ctor for deserialization from DB
+    }
+
     public Comment(String author, String text, Date creationDate){
         this.mAuthor = author;
         this.mText = text;
