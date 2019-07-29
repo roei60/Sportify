@@ -231,6 +231,7 @@ public class RegisterFragment extends Fragment {
 
                                 mProgressDialog.dismiss();
                                 //register completed and logged in.
+                                ((MainActivity)getActivity()).enableNavigation(true);
                                 Toast.makeText(getActivity(), "Sign In Successfull!", Toast.LENGTH_LONG).show();
                                 Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_postsListFragment);
                             } else {
@@ -295,6 +296,7 @@ public class RegisterFragment extends Fragment {
         mDatabaseRef.child(userId).setValue(user);
         mProgressDialog.dismiss();
         //register completed and logged in.
+        ((MainActivity)getActivity()).enableNavigation(true);
         Toast.makeText(getActivity(), "Registeraion Successfull!", Toast.LENGTH_LONG).show();
         Navigation.findNavController(this.getView()).navigate(R.id.action_registerFragment_to_postsListFragment);
     }

@@ -74,10 +74,10 @@ public class PostsListFragment extends Fragment {
     public PostsListFragment() {
         // Required empty public constructor
     }
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
