@@ -2,6 +2,9 @@ package com.example.Sportify.Activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +17,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.Sportify.R;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity  implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -26,6 +31,11 @@ public class MainActivity extends AppCompatActivity  implements
 
     public NavigationView navigationView;
 
+    public TextView Menu_EmailText;
+    public TextView Menu_NameTxt;
+    public ImageView Menu_ProfilePicture;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +47,13 @@ public class MainActivity extends AppCompatActivity  implements
     public void enableNavigation(boolean enabled){
         setupNavigation();
         setDrawerEnabled(enabled);
+        if(enabled)
+            UpdateUserData();
+    }
+
+    private void UpdateUserData() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+      Menu_EmailText.setText(currentUser.getEmail());
     }
 
     private void setDrawerEnabled(boolean enabled) {
@@ -66,6 +83,17 @@ public class MainActivity extends AppCompatActivity  implements
         NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.setNavigationItemSelectedListener(this);
+
+        this.Menu_ProfilePicture = findViewById(R.id.Header_ProfilePicture);
+        this.Menu_EmailText=findViewById(R.id.Header_EmailTxt);
+        this.Menu_NameTxt=findViewById(R.id.Header_NameTxt);
+        Menu_ProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawers();
+                navController.navigate(R.id.profileFragment);
+            }
+        });
 
     }
 

@@ -7,7 +7,7 @@
     android:background="@drawable/header">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/appCompatImageView"
+        android:id="@+id/Header_ProfilePicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/appCompatTextView"
+        android:id="@+id/Header_NameTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -32,9 +32,10 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/Header_ProfilePicture" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/Header_EmailTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -45,7 +46,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/Header_NameTxt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
