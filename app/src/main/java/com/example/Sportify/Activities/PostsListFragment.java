@@ -102,6 +102,7 @@ public class PostsListFragment extends Fragment {
                 Log.d("TAG","item click: " + index);
                 //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
                 Post post = PostsListAdapter.mData.get(index);
+                Log.d("TAG","post id: " + post.getId());
 //                CardsListFragmentDirections.ActionCardsListFragmentToCardDetailsFragment action =
 //                        CardsListFragmentDirections.actionCardsListFragmentToCardDetailsFragment(
 //                                card.getPersonName(),

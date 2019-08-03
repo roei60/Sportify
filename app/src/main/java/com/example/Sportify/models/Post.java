@@ -7,7 +7,7 @@ import java.util.List;
 public class Post {
 
     private String mId;
-    private String mAuthor; // will contain ID of user created post
+    private User mAuthor; // will contain data of user created post
     private String mText; // actual post text
     private String mPicture; // url of picture in post from DB
     private List<String> mLikers; // list of IDs of users liked the post
@@ -18,11 +18,11 @@ public class Post {
         // Need empty ctor for deserialization from DB
     }
 
-    public Post(String author, String text, Date creationDate) {
+    public Post(User author, String text, Date creationDate) {
         this(author, text, creationDate, null, new ArrayList<String>(), new ArrayList<Comment>());
     }
 
-    public Post(String author, String text,Date creationDate, String picture, List<String> likers, List<Comment> comments) {
+    public Post(User author, String text,Date creationDate, String picture, List<String> likers, List<Comment> comments) {
         this.mId = java.util.UUID.randomUUID().toString();
         this.mAuthor = author;
         this.mText = text;
@@ -39,10 +39,10 @@ public class Post {
         return this.mId;
     }
 
-    public String getAuthor(){
+    public User getAuthor(){
         return this.mAuthor;
     }
-    public void setAuthor(String author){
+    public void setAuthor(User author){
         this.mAuthor = author;
     }
 

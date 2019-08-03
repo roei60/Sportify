@@ -1,6 +1,7 @@
 package com.example.Sportify.dal;
 
 import com.example.Sportify.models.Post;
+import com.example.Sportify.models.User;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,6 +42,10 @@ public class Dao {
 
     public void addPost(Post post) {
         firebaseDao.addPost(post);
+    }
+
+    public interface GetUserDetailsListener{
+        void onComplete(User user);
     }
 
 }

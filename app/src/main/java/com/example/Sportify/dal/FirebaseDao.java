@@ -1,9 +1,13 @@
 package com.example.Sportify.dal;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.example.Sportify.models.Post;
+import com.example.Sportify.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -41,22 +45,33 @@ public class FirebaseDao {
     }
 
     public void getAllPosts(final Dao.GetAllPostsListener listener) {
-        db.collection("Users").document(auth.getCurrentUser().getUid()).collection("Posts")
+        db.collection("Users")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                List<Post> data = new Vector<>();
-                if (e != null) {
-                    listener.onComplete(data);
-                    return;
-                }
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    Post post = doc.toObject(Post.class);
-                    data.add(post);
-                }
-                listener.onComplete(data);
-            }
-        });
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        final List<Post> data = new Vector<>();
+                        if (e != null) {
+                            listener.onComplete(data);
+                            return;
+                        }
+                        for (QueryDocumentSnapshot userDoc : queryDocumentSnapshots) {
+                            final User user = userDoc.toObject(User.class);
+                            userDoc.getReference().collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                    for(QueryDocumentSnapshot postDoc: queryDocumentSnapshots)
+                                    {
+                                        Post post = postDoc.toObject(Post.class);
+                                        post.setId(postDoc.getId());
+                                        post.setAuthor(user);
+                                        data.add(post);
+                                    }
+                                    listener.onComplete(data);
+                                }
+                            });
+                        }
+                    }
+                });
     }
 
     public void addPost(Post post) {

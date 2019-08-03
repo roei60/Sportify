@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.Sportify.R;
+import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Post;
+import com.example.Sportify.models.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -54,14 +56,14 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     class PostRowViewHolder extends RecyclerView.ViewHolder {
         ImageView mAvatar;
         TextView mName;
-        TextView mPhone;
+        TextView mText;
         View mView;
         public PostRowViewHolder(@NonNull final View itemView,
                                  final OnItemClickListener listener) {
             super(itemView);
             mAvatar = itemView.findViewById(R.id.post_user_img);
             mName = itemView.findViewById(R.id.post_row_user_name_tv);
-            mPhone = itemView.findViewById(R.id.post_row_text_tv);
+            mText = itemView.findViewById(R.id.post_row_text_tv);
             mView=itemView;
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -78,10 +80,13 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         }
 
         public void bind(Post post){
-            mName.setText(post.getAuthor());
-            mPhone.setText(post.getText());
-            Picasso.with(itemView.getContext()).load(post.getPicture())
-                    .fit().centerCrop().into(mAvatar);
+            mText.setText(post.getText());
+
+            mName.setText(post.getAuthor().getName());
+            if (post.getAuthor().getImageUri() != null)
+                Picasso.with(itemView.getContext()).load(post.getAuthor().getImageUri()).fit().into(mAvatar);
+            else
+                mAvatar.setImageResource(R.drawable.user_default_image);
         }
     }
 }
