@@ -54,6 +54,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     class PostRowViewHolder extends RecyclerView.ViewHolder {
         ImageView mUserImage;
         TextView mName;
+        TextView mDate;
         TextView mText;
         ImageView mPostImage;
         View mView;
@@ -62,6 +63,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             super(itemView);
             mUserImage = itemView.findViewById(R.id.post_user_img);
             mName = itemView.findViewById(R.id.post_row_user_name_tv);
+            mDate = itemView.findViewById(R.id.post_row_date_tv);
             mText = itemView.findViewById(R.id.post_row_text_tv);
             mPostImage = itemView.findViewById(R.id.post_row_image_view);
             mView = itemView;
@@ -81,7 +83,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
         public void bind(Post post){
             mText.setText(post.getText());
-
+            mDate.setText(post.getCreationDate());
             mName.setText(post.getAuthor().getName());
             if (post.getAuthor().getImageUri() != null)
                 Picasso.with(itemView.getContext()).load(post.getAuthor().getImageUri()).fit().into(mUserImage);
@@ -91,6 +93,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             if (post.getPicture() != null) {
                 Log.d("Tag", "pctureUri = " + post.getPicture());
                 Picasso.with(itemView.getContext()).load(post.getPicture()).fit().into(mPostImage);
+                mPostImage.setVisibility(View.VISIBLE);
             }
             else{
                 mPostImage.setVisibility(View.GONE);

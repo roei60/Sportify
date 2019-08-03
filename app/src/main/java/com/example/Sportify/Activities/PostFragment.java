@@ -104,6 +104,7 @@ public class PostFragment extends Fragment {
         Dao.instance.addPost(post, new Dao.AddPostListener() {
             @Override
             public void onComplete(Post post) {
+                System.out.println("CreationDate : " + post.getCreationDate());
                 Toast.makeText(getActivity(), "Post added successfully!", Toast.LENGTH_SHORT).show();
                 Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
             }

@@ -42,8 +42,12 @@ public class Post {
         this.mComments = comments;
     }
 
-    public void setmCreationDate(String mCreationDate) {
-        this.mCreationDate = mCreationDate;
+    public String getCreationDate() {
+        return this.mCreationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.mCreationDate = creationDate;
     }
 
     public void setId(String id){
