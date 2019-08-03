@@ -5,17 +5,17 @@
         <item
             android:id="@+id/first"
             android:icon="@drawable/avatar"
-            android:title="Android" />
+            android:title="My Profile" />
 
         <item
             android:id="@+id/second"
             android:icon="@drawable/avatar"
-            android:title="Dollar" />
+            android:title="Add New Post" />
 
         <item
             android:id="@+id/third"
             android:icon="@drawable/avatar"
-            android:title="Save" />
+            android:title="Comments" />
 
     </group>
 </menu>

@@ -3,6 +3,7 @@ package com.example.Sportify.adapters;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.Sportify.R;
-import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Post;
-import com.example.Sportify.models.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.Vector;
 
 public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostRowViewHolder>{
     public static List<Post> mData;
@@ -54,17 +52,19 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     }
 
     class PostRowViewHolder extends RecyclerView.ViewHolder {
-        ImageView mAvatar;
+        ImageView mUserImage;
         TextView mName;
         TextView mText;
+        ImageView mPostImage;
         View mView;
         public PostRowViewHolder(@NonNull final View itemView,
                                  final OnItemClickListener listener) {
             super(itemView);
-            mAvatar = itemView.findViewById(R.id.post_user_img);
+            mUserImage = itemView.findViewById(R.id.post_user_img);
             mName = itemView.findViewById(R.id.post_row_user_name_tv);
             mText = itemView.findViewById(R.id.post_row_text_tv);
-            mView=itemView;
+            mPostImage = itemView.findViewById(R.id.post_row_image_view);
+            mView = itemView;
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,9 +84,17 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
             mName.setText(post.getAuthor().getName());
             if (post.getAuthor().getImageUri() != null)
-                Picasso.with(itemView.getContext()).load(post.getAuthor().getImageUri()).fit().into(mAvatar);
+                Picasso.with(itemView.getContext()).load(post.getAuthor().getImageUri()).fit().into(mUserImage);
             else
-                mAvatar.setImageResource(R.drawable.user_default_image);
+                mUserImage.setImageResource(R.drawable.user_default_image);
+
+            if (post.getPicture() != null) {
+                Log.d("Tag", "pctureUri = " + post.getPicture());
+                Picasso.with(itemView.getContext()).load(post.getPicture()).fit().into(mPostImage);
+            }
+            else{
+                mPostImage.setVisibility(View.GONE);
+            }
         }
     }
 }

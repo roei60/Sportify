@@ -1,5 +1,7 @@
 package com.example.Sportify.dal;
 
+import android.net.Uri;
+
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
 
@@ -40,12 +42,22 @@ public class Dao {
         firebaseDao.getAllPosts(listener);
     }
 
-    public void addPost(Post post) {
-        firebaseDao.addPost(post);
+    public interface AddPostListener{
+        void onComplete(Post post);
+    }
+
+    public void addPost(Post post, AddPostListener listener) {
+        firebaseDao.addPost(post, listener);
     }
 
     public interface GetUserDetailsListener{
         void onComplete(User user);
     }
+
+    public interface UploadFileListener{
+        void onComplete(Uri imageUri);
+    }
+
+    public void uploadFile(Uri imageUri, UploadFileListener listener){ firebaseDao.uploadFile(imageUri, listener);}
 
 }
