@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -57,6 +59,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         TextView mDate;
         TextView mText;
         ImageView mPostImage;
+        CheckBox mLikeCb;
         View mView;
         public PostRowViewHolder(@NonNull final View itemView,
                                  final OnItemClickListener listener) {
@@ -66,6 +69,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             mDate = itemView.findViewById(R.id.post_row_date_tv);
             mText = itemView.findViewById(R.id.post_row_text_tv);
             mPostImage = itemView.findViewById(R.id.post_row_image_view);
+            mLikeCb = itemView.findViewById(R.id.post_row_like_cb);
             mView = itemView;
 
             itemView.setOnClickListener(new View.OnClickListener() {

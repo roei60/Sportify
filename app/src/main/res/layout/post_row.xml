@@ -100,24 +100,26 @@
 
     <ImageButton
         android:id="@+id/post_row_comment_bt"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:button="@null"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintStart_toEndOf="@+id/post_row_like_cb"
         app:layout_constraintTop_toBottomOf="@+id/post_row_separator_view"
-        app:srcCompat="@drawable/comment_icon" />
+        app:srcCompat="@drawable/comment_icon_new" />
 
     <CheckBox
         android:id="@+id/post_row_like_cb"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:background="@drawable/like_icon"
+        android:background="@drawable/like_icon_layout"
+        android:stateListAnimator="@animator/scale"
         android:button="@null"
+        android:checked="false"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_row_separator_view" />
