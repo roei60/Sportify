@@ -16,9 +16,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.Sportify.R;
+import com.example.Sportify.dal.Dao;
+import com.example.Sportify.models.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity  implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -34,7 +37,6 @@ public class MainActivity extends AppCompatActivity  implements
     public TextView Menu_EmailText;
     public TextView Menu_NameTxt;
     public ImageView Menu_ProfilePicture;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,17 @@ public class MainActivity extends AppCompatActivity  implements
     }
 
     private void UpdateUserData() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-      Menu_EmailText.setText(currentUser.getEmail());
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        Dao.instance.getUserDetails(currentUser.getUid(), new Dao.GetUserDetailsListener() {
+            @Override
+            public void onComplete(User user) {
+                Dao.instance.setCurrentUser(user);
+                Menu_EmailText.setText(currentUser.getEmail());
+                Menu_NameTxt.setText(user.getName());
+                Picasso.with(MainActivity.this).load(user.getImageUri()).fit().into(Menu_ProfilePicture);
+
+            }
+        });
     }
 
     private void setDrawerEnabled(boolean enabled) {
