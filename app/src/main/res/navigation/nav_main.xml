@@ -49,7 +49,7 @@
         android:id="@+id/postsListFragment"
         android:name="com.example.Sportify.Activities.PostsListFragment"
         android:label="fragment_posts_list"
-        tools:layout="@layout/fragment_posts_list" >
+        tools:layout="@layout/fragment_posts_list">
         <action
             android:id="@+id/action_postsListFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -77,6 +77,9 @@
         <action
             android:id="@+id/action_commentsFragment_to_postsListFragment"
             app:destination="@id/postsListFragment" />
+        <argument
+            android:name="postId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/postFragment"

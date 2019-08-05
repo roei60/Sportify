@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.FileUtils;
@@ -138,7 +139,6 @@ public class FirebaseDao {
         });
     }
 
-
     public void  getUser(String id, final Dao.GetUserDetailsListener listener){
         db.collection("Users").document(id).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -167,5 +167,84 @@ public class FirebaseDao {
                         listener.onComplete(null);
                     }
                 });
+    }
+
+    public void getAllUsers(final Dao.GetAllUsersListener listener){
+        db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    QuerySnapshot result = task.getResult();
+                    List<DocumentSnapshot> documents = result.getDocuments();
+                    List<User> users = new ArrayList<>();
+                    for (DocumentSnapshot userDoc : documents) {
+                        User user = userDoc.toObject(User.class);
+                        user.setId(userDoc.getId());
+                        users.add(user);
+                    }
+                    listener.onComplete(users);
+                }
+                else
+                    listener.onComplete(null);
+            }
+        });
+    }
+
+    public void getAllComments(final String postId, final Dao.GetAllCommentsListener listener){
+        getAllUsers(new Dao.GetAllUsersListener() {
+            @Override
+            public void onComplete(final List<User> users) {
+                db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot result = task.getResult();
+                            List<DocumentSnapshot> documents = result.getDocuments();
+                            for (DocumentSnapshot userDoc: documents) {
+                                userDoc.getReference().collection("Posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            QuerySnapshot postsSnapshots = task.getResult();
+                                            List<DocumentSnapshot> postDocuments = postsSnapshots.getDocuments();
+                                            final List<Comment> comments = new ArrayList<>();
+                                            for (DocumentSnapshot postDoc: postDocuments) {
+                                                if (postDoc.getId().equals(postId)){
+                                                    postDoc.getReference().collection("Comments").get()
+                                                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                                    List<DocumentSnapshot> commentDocs = queryDocumentSnapshots.getDocuments();
+
+                                                                    for (DocumentSnapshot commentDoc: commentDocs ) {
+                                                                        final Comment comment = commentDoc.toObject(Comment.class);
+                                                                        comment.setId(commentDoc.getId());
+                                                                        for (User user: users) {
+                                                                            if (user.getId().equals(commentDoc.get("userId"))){
+                                                                                comment.setAuthor(user);
+                                                                                comments.add(comment);
+                                                                                Log.d("Tag", "adding comment");
+                                                                            }
+                                                                        }
+
+                                                                    }
+                                                                    listener.onComplete(comments);
+                                                                }
+                                                            });
+                                                }
+                                            }
+                                        }
+                                        else
+                                            listener.onComplete(null);
+                                    }
+                                });
+                            }
+                        }
+                        else
+                            listener.onComplete(null);
+                    }
+                });
+            }
+        });
     }
 }

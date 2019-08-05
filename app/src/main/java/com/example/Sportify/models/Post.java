@@ -68,6 +68,22 @@ public class Post {
         return this.mText;
     }
 
+    public List<String> getLikers() {
+        return mLikers;
+    }
+
+    public void setLikers(List<String> likers) {
+        this.mLikers = likers;
+    }
+
+    public List<Comment> getComments() {
+        return mComments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.mComments = comments;
+    }
+
     public void setText(String text) {
         this.mText = text;
     }

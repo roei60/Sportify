@@ -93,8 +93,6 @@ public class PostsListFragment extends Fragment {
         mAdapter = new PostsListAdapter(mData);
         mRecyclerView.setAdapter(mAdapter);
 
-        mUserDetails=FirebaseAuth.getInstance().getCurrentUser();
-
         // TODO: Navigate to cardDetails fragment
         mAdapter.setOnItemClickListener(new PostsListAdapter.OnItemClickListener() {
             @Override
@@ -103,17 +101,10 @@ public class PostsListFragment extends Fragment {
                 //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
                 Post post = PostsListAdapter.mData.get(index);
                 Log.d("TAG","post id: " + post.getId());
-//                CardsListFragmentDirections.ActionCardsListFragmentToCardDetailsFragment action =
-//                        CardsListFragmentDirections.actionCardsListFragmentToCardDetailsFragment(
-//                                card.getPersonName(),
-//                                card.getPhoneNumber(),
-//                                card.getCompany(),
-//                                card.getAddress(),
-//                                card.getEmail(),
-//                                card.getWebsite(),
-//                                Uri.parse(card.getImageUri())
-//                        );
-//                Navigation.findNavController(view).navigate(action);
+
+                PostsListFragmentDirections.ActionPostsListFragmentToCommentsFragment action =
+                        PostsListFragmentDirections.actionPostsListFragmentToCommentsFragment(post.getId());
+                Navigation.findNavController(view).navigate(action);
             }
         });
 

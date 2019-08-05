@@ -2,6 +2,7 @@ package com.example.Sportify.dal;
 
 import android.net.Uri;
 
+import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
 
@@ -72,5 +73,21 @@ public class Dao {
     public void getUserDetails(String id,Dao.GetUserDetailsListener listener)
     {
         firebaseDao.getUser(id,listener);
+    }
+
+    public interface GetAllUsersListener{
+        void onComplete(List<User> users);
+    }
+
+    public void getAllUsers(GetAllUsersListener listener){
+        firebaseDao.getAllUsers(listener);
+    }
+
+    public interface GetAllCommentsListener{
+        void onComplete(List<Comment> comments);
+    }
+
+    public void getAllComments(String postId, GetAllCommentsListener listener){
+        firebaseDao.getAllComments(postId, listener);
     }
 }

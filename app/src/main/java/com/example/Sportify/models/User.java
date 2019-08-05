@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class User {
+    private String mId;
     private String mName;
     private String mEmail;
     private String mToken;
@@ -11,6 +12,15 @@ public class User {
     private List<Post> mUserPosts;
 
     public  List<Post> getPosts(){return mUserPosts;}
+
+    public String getId() {
+        return mId;
+    }
+
+    public void setId(String id) {
+        this.mId = id;
+    }
+
     public String getName(){  return this.mName;   }
     public String getEmail(){ return this.mEmail; }
     public String getToken() { return this.mToken; }
