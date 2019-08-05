@@ -102,11 +102,11 @@
         android:id="@+id/post_row_comment_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:button="@null"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#0000"
         app:layout_constraintBottom_toBottomOf="@+id/view"
-        app:layout_constraintStart_toEndOf="@+id/post_row_like_cb"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_row_separator_view"
         app:srcCompat="@drawable/comment_icon_new" />
 
