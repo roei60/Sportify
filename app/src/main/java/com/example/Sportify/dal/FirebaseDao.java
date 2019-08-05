@@ -38,7 +38,7 @@ import java.util.Vector;
 import javax.annotation.Nullable;
 
 public class FirebaseDao {
-
+    User _currentUser;
     FirebaseFirestore db;
     FirebaseAuth auth;
     StorageReference storage;
@@ -136,5 +136,36 @@ public class FirebaseDao {
                 }
             }
         });
+    }
+
+
+    public void  getUser(String id, final Dao.GetUserDetailsListener listener){
+        db.collection("Users").document(id).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot snapshot = task.getResult();
+                            final User user= snapshot.toObject(User.class);
+                            snapshot.getReference().collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                    for(QueryDocumentSnapshot postDoc: queryDocumentSnapshots)
+                                    {
+                                        Post post = postDoc.toObject(Post.class);
+                                        post.setId(postDoc.getId());
+                                        post.setAuthor(user);
+                                        user.getPosts().add(post);
+                                    }
+                                    listener.onComplete(user);
+
+                                }
+                            });
+
+                            return;
+                        }
+                        listener.onComplete(null);
+                    }
+                });
     }
 }

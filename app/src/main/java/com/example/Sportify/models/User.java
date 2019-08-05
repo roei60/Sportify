@@ -1,5 +1,6 @@
 package com.example.Sportify.models;
 
+import java.util.List;
 import java.util.Vector;
 
 public class User {
@@ -7,13 +8,21 @@ public class User {
     private String mEmail;
     private String mToken;
     private String mImageUri;
+    private List<Post> mUserPosts;
 
+    public  List<Post> getPosts(){return mUserPosts;}
     public String getName(){  return this.mName;   }
     public String getEmail(){ return this.mEmail; }
     public String getToken() { return this.mToken; }
     public String getImageUri() {return this.mImageUri;}
 
-    public User(){}
+    public User(){
+        mUserPosts=new Vector<Post>();
+    }
+
+    public void setmUserPosts(List<Post> posts){
+        mUserPosts=posts;
+    }
 
     public void setName(String name) {
         this.mName = name;

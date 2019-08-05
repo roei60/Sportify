@@ -13,7 +13,16 @@ import java.util.Vector;
 
 public class Dao {
     final public static Dao instance = new Dao();
+    User currentUser;
 
+    public void setCurrentUser(User user)
+    {
+        this.currentUser=user;
+    }
+    public User GetCurrentUser()
+    {
+        return this.currentUser;
+    }
     //ModelSql modelSql;
     FirebaseDao firebaseDao;
     private Dao() {
@@ -60,4 +69,8 @@ public class Dao {
 
     public void uploadFile(Uri imageUri, UploadFileListener listener){ firebaseDao.uploadFile(imageUri, listener);}
 
+    public void getUserDetails(String id,Dao.GetUserDetailsListener listener)
+    {
+        firebaseDao.getUser(id,listener);
+    }
 }
