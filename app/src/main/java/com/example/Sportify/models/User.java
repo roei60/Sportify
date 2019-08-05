@@ -38,6 +38,9 @@ public class User {
         this.mName = name;
     }
 
+    public void setEmail(String email) {
+        this.mEmail = email;
+    }
     public void setImageUri(String imageUri){
         this.mImageUri = imageUri;
     }
