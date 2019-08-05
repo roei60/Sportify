@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity  implements
             @Override
             public void onComplete(User user) {
                 Dao.instance.setCurrentUser(user);
+                user.setEmail(currentUser.getEmail());
                 Menu_EmailText.setText(currentUser.getEmail());
                 Menu_NameTxt.setText(user.getName());
                 Picasso.with(MainActivity.this).load(user.getImageUri()).fit().into(Menu_ProfilePicture);

@@ -19,7 +19,7 @@ public class Dao {
     {
         this.currentUser=user;
     }
-    public User GetCurrentUser()
+    public User getCurrentUser()
     {
         return this.currentUser;
     }
