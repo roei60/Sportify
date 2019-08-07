@@ -90,4 +90,12 @@ public class Dao {
     public void getAllComments(String postId, GetAllCommentsListener listener){
         firebaseDao.getAllComments(postId, listener);
     }
+
+    public interface AddCommentListener{
+        void onComplete(Comment comment);
+    }
+
+    public void addComment(String postId, Comment comment, AddCommentListener listener){
+        firebaseDao.addComment(postId, comment, listener);
+    }
 }

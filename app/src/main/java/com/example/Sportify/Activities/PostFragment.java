@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Post;
+import com.example.Sportify.utils.Consts;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -93,14 +94,13 @@ public class PostFragment extends Fragment {
     }
 
     private void uploadPost(Uri imageUri){
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
-        System.out.println(dateFormat.format(date));
+        System.out.println(Consts.DATE_FORMAT.format(date));
         Post post;
         if (imageUri != null)
-            post = new Post(mPostEditText.getText().toString(), dateFormat.format(date), imageUri.toString());
+            post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date), imageUri.toString());
         else
-            post = new Post(mPostEditText.getText().toString(), dateFormat.format(date));
+            post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date));
         Dao.instance.addPost(post, new Dao.AddPostListener() {
             @Override
             public void onComplete(Post post) {
