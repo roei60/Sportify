@@ -1,8 +1,10 @@
 package com.example.Sportify.Activities;
 
 
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Post;
+import com.example.Sportify.utils.Consts;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.Nullable;
@@ -51,8 +54,10 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -126,8 +131,23 @@ public class PostsListFragment extends Fragment {
         setHasOptionsMenu(true);
 
         Dao.instance.getAllPosts(new Dao.GetAllPostsListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onComplete(List<Post> data) {
+                data.sort(new Comparator<Post>() {
+                    @Override
+                    public int compare(Post o1, Post o2) {
+                        try {
+                            Date date1 = Consts.DATE_FORMAT.parse(o1.getCreationDate());
+                            Date date2 = Consts.DATE_FORMAT.parse(o2.getCreationDate());
+                            return date1.compareTo(date2);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            return 0;
+                        }
+                    }
+                });
+
                 mData = data;
                 mAdapter.mData = data;
                 mAdapter.notifyDataSetChanged();

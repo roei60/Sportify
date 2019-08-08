@@ -22,18 +22,20 @@ public class Comment {
         // Need empty ctor for deserialization from DB
     }
 
-    public Comment(String text, String creationDate) {
-        this(null, text, creationDate);
-    }
-
     public void setId(String id) {
         this.mId = id;
     }
 
-    public Comment(User author, String text, String creationDate){
-        this.mAuthor = author;
+    public String getId()
+    {
+        return this.mId;
+    }
+
+    public Comment(String text, String creationDate, String userId){
+        this.mId = java.util.UUID.randomUUID().toString();
         this.mText = text;
         this.mCreationDate = creationDate;
+        this.mUserId = userId;
     }
 
     public User getAuthor() {
