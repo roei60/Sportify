@@ -21,6 +21,7 @@ import androidx.navigation.Navigation;
 
 
 import com.example.Sportify.R;
+import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.FileUtils;
 import com.google.android.gms.tasks.Continuation;
@@ -187,61 +188,42 @@ public class RegisterFragment extends Fragment {
                 if(!isFormValid(mName, mEmail, mPassword))
                     return;
 
-                mProgressDialog.setMessage("Registering user...");
-                mProgressDialog.show();
                 if(!mIsSignIn) {
                     mProgressDialog.setMessage("Registering user...");
                     mProgressDialog.show();
-                    mFireBashAuth.createUserWithEmailAndPassword(mEmail, mPassword).
-                            addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // if user image chosen - upload to firebase sorage
-                                        if (mUserImageUri != null)
-                                            uploadFile();
-                                        else
-                                            saveUser(null);
-                                    } else {
-                                        mProgressDialog.dismiss();
-                                        Toast.makeText(getActivity(), "Registeraion Failed! pls try again later...", Toast.LENGTH_LONG).show();
-                                    }
+                    User user=new User(mName,mEmail,"",null);
 
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
+                    Dao.instance.register(user, mPassword, mUserImageUri, new Dao.OnUpdateComleted() {
+                        @Override
+                        public void onUpdateCompleted(boolean success) {
+                            if(success) {
+                                Toast.makeText(getActivity(), "Registeraion Successfull!", Toast.LENGTH_LONG).show();
+                                HandleSuccess(view);
+                            }
+                            else
+                                Toast.makeText(getActivity(), "Registeraion Failed! pls try again later...", Toast.LENGTH_LONG).show();
+
+                            mProgressDialog.dismiss();
+                        }
+                    });
                 }
                 else {
                     mProgressDialog.setMessage("Login user...");
                     mProgressDialog.show();
-                    mFireBashAuth.signInWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                    Dao.instance.singIn(mEmail, mPassword, new Dao.OnUpdateComleted() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-
-                                final FirebaseUser currentUser = mFireBashAuth.getCurrentUser();
-                                Map<String, Object> tokenMap = new HashMap<>();
-                                tokenMap.put("token", FirebaseInstanceId.getInstance().getToken());
-                                mDatabaseRef.child(currentUser.getUid()).updateChildren(tokenMap);
-
-                                mProgressDialog.dismiss();
+                        public void onUpdateCompleted(boolean success) {
+                            if (success) {
+                                HandleSuccess(view);
                                 //register completed and logged in.
-                                ((MainActivity)getActivity()).enableNavigation(true);
                                 Toast.makeText(getActivity(), "Sign In Successfull!", Toast.LENGTH_LONG).show();
-                                Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_postsListFragment);
                             } else {
-                                mProgressDialog.dismiss();
                                 Toast.makeText(getActivity(), "Sign in Failed! pls try again later...", Toast.LENGTH_LONG).show();
-
                             }
-
+                                mProgressDialog.dismiss();
                         }
                     });
+
                 }
 
 
@@ -249,7 +231,11 @@ public class RegisterFragment extends Fragment {
         });
         return view;
     }
-
+    private void HandleSuccess(View  view){
+        mProgressDialog.dismiss();
+        ((MainActivity)getActivity()).enableNavigation(true);
+        Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_postsListFragment);
+    }
     private void selectProfilePicture()
     {
         CropImage.activity()

@@ -51,6 +51,14 @@ public class Dao {
     public interface  OnUpdateComleted{
         void onUpdateCompleted(boolean success);
     }
+    public void singIn(String email, String password, final Dao.OnUpdateComleted listener)
+    {
+        firebaseDao.signIn(email,password,listener);
+    }
+    public void register(final User user, String password, final Uri userImageUri, final Dao.OnUpdateComleted listener)
+    {
+        firebaseDao.registerUser(user,password,userImageUri,listener);
+    }
     public void UpdateUserProfile(User user,OnUpdateComleted listener)
     {
         firebaseDao.UpdateUserProfile(user,listener);

@@ -12,9 +12,12 @@ import com.example.Sportify.models.User;
 import com.example.Sportify.utils.FileUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -180,6 +183,53 @@ public class FirebaseDao {
             }
         });
     }
+    public void signIn(String email, String password, final Dao.OnUpdateComleted listener){
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                listener.onUpdateCompleted(task.isSuccessful());
+            }
+        });
+    }
+
+    public void registerUser(final User user, String password, final Uri userImageUri, final Dao.OnUpdateComleted listener)
+    {
+        auth.createUserWithEmailAndPassword(user.getEmail(),password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // if user image chosen - upload to firebase sorage
+                    final String uid = auth.getCurrentUser().getUid();
+                    if (userImageUri != null)
+                        uploadProfileImageFile(uid, userImageUri, new Dao.UploadFileListener() {
+                            @Override
+                            public void onComplete(Uri imageUri) {
+                                user.setImageUri(imageUri.toString());
+                                saveUser(user,listener);
+                            }
+                        });
+                    else
+                        saveUser(user,listener);
+                } else {
+                    listener.onUpdateCompleted(false);
+                }
+
+            }
+        });
+    }
+    private void saveUser(User user, final Dao.OnUpdateComleted listener) {
+        String uid = auth.getCurrentUser().getUid();
+        user.setId(uid);
+        final CollectionReference UserRef = db.collection("Users");
+        UserRef.document(uid).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onUpdateCompleted(task.isSuccessful());
+            }
+        });
+
+    }
+
 
     public void  getUser(final String id, final Dao.GetUserDetailsListener listener){
         db.collection("Users").document(id).get()
