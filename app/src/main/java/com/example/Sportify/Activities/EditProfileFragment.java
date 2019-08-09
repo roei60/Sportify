@@ -70,7 +70,9 @@ public class EditProfileFragment extends Fragment {
 
 
         editProfile_name_txt.setText(currentUser.getName());
-        Picasso.with(this.getContext()).load(currentUser.getImageUri()).fit().into(editProfile_image);
+        String imageUri = currentUser.getImageUri();
+        if(imageUri!=null)
+            Picasso.with(this.getContext()).load(imageUri).fit().into(editProfile_image);
 
         editProfile_choosePicBtn.setOnClickListener(new View.OnClickListener() {
             @Override

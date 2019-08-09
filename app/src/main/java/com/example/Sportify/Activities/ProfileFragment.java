@@ -48,7 +48,9 @@ public class ProfileFragment extends Fragment {
         User currentUser = Dao.instance.getCurrentUser();
         emailTxt.setText(currentUser.getEmail());
         nameTxt.setText(currentUser.getName());
-        Picasso.with(this.getContext()).load(currentUser.getImageUri()).fit().into(userImageView);
+        String imageUri = currentUser.getImageUri();
+        if(imageUri!=null)
+            Picasso.with(this.getContext()).load(imageUri).fit().into(userImageView);
         EditUserDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

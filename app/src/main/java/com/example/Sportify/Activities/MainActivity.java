@@ -63,7 +63,9 @@ public class MainActivity extends AppCompatActivity  implements
                 Dao.instance.setCurrentUser(user);
                 Menu_EmailText.setText(currentUser.getEmail());
                 Menu_NameTxt.setText(user.getName());
-                Picasso.with(MainActivity.this).load(user.getImageUri()).fit().into(Menu_ProfilePicture);
+                String imageUri = user.getImageUri();
+                if(imageUri!=null)
+                    Picasso.with(MainActivity.this).load(imageUri).fit().into(Menu_ProfilePicture);
 
             }
         });
