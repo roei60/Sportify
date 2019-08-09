@@ -53,13 +53,14 @@ public class MainActivity extends AppCompatActivity  implements
             UpdateUserData();
     }
 
-    private void UpdateUserData() {
+    public void UpdateUserData() {
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         Dao.instance.getUserDetails(currentUser.getUid(), new Dao.GetUserDetailsListener() {
             @Override
             public void onComplete(User user) {
-                Dao.instance.setCurrentUser(user);
                 user.setEmail(currentUser.getEmail());
+                user.setId(currentUser.getUid());
+                Dao.instance.setCurrentUser(user);
                 Menu_EmailText.setText(currentUser.getEmail());
                 Menu_NameTxt.setText(user.getName());
                 Picasso.with(MainActivity.this).load(user.getImageUri()).fit().into(Menu_ProfilePicture);

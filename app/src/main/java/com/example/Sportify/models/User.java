@@ -11,6 +11,15 @@ public class User {
     private String mImageUri;
     private List<Post> mUserPosts;
 
+    public User(User user) {
+        this.mId=user.mId;
+        this.mName=user.mName;
+        this.mEmail=user.mEmail;
+        mImageUri=user.mImageUri;
+        mToken=user.mToken;
+        mUserPosts=new Vector<Post>(user.mUserPosts);
+    }
+
     public  List<Post> getPosts(){return mUserPosts;}
 
     public String getId() {

@@ -2,6 +2,7 @@ package com.example.Sportify.dal;
 
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -19,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,14 +28,17 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.annotation.Nullable;
@@ -205,6 +210,53 @@ public class FirebaseDao {
                         listener.onComplete(null);
                     }
                 });
+    }
+
+    public void UpdateUserProfile(final User user, final Dao.OnUpdateComleted listener) {
+        final CollectionReference UserRef = db.collection("Users");
+        UserRef.document(user.getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot result = task.getResult();
+                    Map<Object, String> map = new HashMap<>();
+                    map.put("name", user.getName());
+                    map.put("imageUri", user.getImageUri());
+                    UserRef.document(result.getId()).set(map, SetOptions.merge());
+                    Dao.instance.setCurrentUser(user);
+                    listener.onUpdateCompleted(true);
+                }
+                else
+                    listener.onUpdateCompleted(false);
+            }
+        });
+    }
+
+
+    public void uploadProfileImageFile(String userId, Uri imageProfile, final Dao.UploadFileListener listener)
+    {
+        final StorageReference fileRef = FirebaseStorage.getInstance().getReference("Uploads/" + userId + "/ProfilePics")
+                .child(System.currentTimeMillis() + "." + FileUtils.getFileExtension(imageProfile));
+        UploadTask uploadTask = fileRef.putFile(imageProfile);
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                return fileRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                     listener.onComplete(downloadUri);
+                } else {
+                    listener.onComplete(null);
+                    //Toast.makeText(getActivity(), "Something got wrong.. pls try again", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     public void getAllUsers(final Dao.GetAllUsersListener listener){

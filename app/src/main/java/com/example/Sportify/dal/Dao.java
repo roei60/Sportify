@@ -6,6 +6,7 @@ import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
 
+import java.security.PublicKey;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,19 +30,6 @@ public class Dao {
     private Dao() {
         //modelSql = new ModelSql();
         firebaseDao = new FirebaseDao();
-
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//        Date date = new Date();
-//        System.out.println(dateFormat.format(date));
-//        Post p1 = new Post("Avi Levi", "my first post!", date);
-//        Post p2 = new Post("Avi Levi", "my second post!", date);
-//        addPost(p1);
-//        addPost(p2);
-
-//        for (int i = 0; i < 10; i++) {
-//            Student st = new Student("" + i, "demo " + i, "image url");
-//            addStudent(st);
-//        }
     }
 
 
@@ -58,6 +46,19 @@ public class Dao {
 
     public void addPost(Post post, AddPostListener listener) {
         firebaseDao.addPost(post, listener);
+    }
+
+    public interface  OnUpdateComleted{
+        void onUpdateCompleted(boolean success);
+    }
+    public void UpdateUserProfile(User user,OnUpdateComleted listener)
+    {
+        firebaseDao.UpdateUserProfile(user,listener);
+    }
+
+    public void UploadUserProfileImage(String userId, Uri imageProfile, final Dao.UploadFileListener listener)
+    {
+        firebaseDao.uploadProfileImageFile(userId,imageProfile,listener);
     }
 
     public interface GetUserDetailsListener{
