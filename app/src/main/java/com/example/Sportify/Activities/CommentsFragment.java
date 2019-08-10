@@ -1,6 +1,5 @@
 package com.example.Sportify.Activities;
 
-
 import android.os.Build;
 import android.os.Bundle;
 
@@ -21,11 +20,10 @@ import com.example.Sportify.adapters.CommentsListAdapter;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.User;
+import com.example.Sportify.utils.Common;
 import com.example.Sportify.utils.Consts;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -82,6 +80,10 @@ public class CommentsFragment extends Fragment {
                 Dao.instance.addComment(mPostId, comment, new Dao.AddCommentListener() {
                     @Override
                     public void onComplete(Comment comment) {
+                        Common.hideKeyboard(CommentsFragment.this);
+                        mCommentText.setText("");
+                        Common.scrollToBottom(mRecyclerView);
+
                         mData.add(comment);
                         mAdapter.mData = mData;
                         mAdapter.notifyDataSetChanged();

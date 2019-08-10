@@ -140,7 +140,7 @@ public class PostsListFragment extends Fragment {
                         try {
                             Date date1 = Consts.DATE_FORMAT.parse(o1.getCreationDate());
                             Date date2 = Consts.DATE_FORMAT.parse(o2.getCreationDate());
-                            return date1.compareTo(date2);
+                            return date2.compareTo(date1);
                         } catch (ParseException e) {
                             e.printStackTrace();
                             return 0;

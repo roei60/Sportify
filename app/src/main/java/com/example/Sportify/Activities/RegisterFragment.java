@@ -23,6 +23,7 @@ import androidx.navigation.Navigation;
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
+import com.example.Sportify.utils.Common;
 import com.example.Sportify.utils.FileUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -234,6 +235,7 @@ public class RegisterFragment extends Fragment {
     private void HandleSuccess(View  view){
         mProgressDialog.dismiss();
         ((MainActivity)getActivity()).enableNavigation(true);
+        Common.hideKeyboard(RegisterFragment.this);
         Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_postsListFragment);
     }
     private void selectProfilePicture()
@@ -283,6 +285,7 @@ public class RegisterFragment extends Fragment {
         mProgressDialog.dismiss();
         //register completed and logged in.
         ((MainActivity)getActivity()).enableNavigation(true);
+        Common.hideKeyboard(RegisterFragment.this);
         Toast.makeText(getActivity(), "Registeraion Successfull!", Toast.LENGTH_LONG).show();
         Navigation.findNavController(this.getView()).navigate(R.id.action_registerFragment_to_postsListFragment);
     }
