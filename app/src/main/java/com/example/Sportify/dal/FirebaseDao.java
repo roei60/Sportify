@@ -2,7 +2,6 @@ package com.example.Sportify.dal;
 
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -12,17 +11,10 @@ import com.example.Sportify.models.User;
 import com.example.Sportify.utils.FileUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -37,9 +29,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -74,6 +64,7 @@ public class FirebaseDao {
                         }
                         for (QueryDocumentSnapshot userDoc : queryDocumentSnapshots) {
                             final User user = userDoc.toObject(User.class);
+                            user.setId(userDoc.getId());
                             userDoc.getReference().collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
                                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -102,11 +93,7 @@ public class FirebaseDao {
                 });
     }
 
-    interface GetPostsListener {
-        void onComplete(Post post);
-    }
-
-    public void getPost(final String id, final GetPostsListener listener) {
+    public void getPost(final String id, final Dao.GetPostListener listener) {
         db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -140,7 +127,9 @@ public class FirebaseDao {
                                                             }
                                                             Post post = postDoc.toObject(Post.class);
                                                             post.setId(postDoc.getId());
+                                                            post.setAuthor(user);
                                                             post.setComments(comments);
+                                                            listener.onComplete(post);
                                                         }
                                                     });
                                         }
@@ -409,7 +398,6 @@ public class FirebaseDao {
                                         if (task.isSuccessful()) {
                                             QuerySnapshot postsSnapshots = task.getResult();
                                             List<DocumentSnapshot> postDocuments = postsSnapshots.getDocuments();
-                                            final List<Comment> comments = new ArrayList<>();
                                             for (DocumentSnapshot postDoc: postDocuments) {
                                                 if (postDoc.getId().equals(postId)){
                                                     postDoc.getReference().collection("Comments").document(comment.getId()).set(comment)

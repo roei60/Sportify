@@ -113,6 +113,20 @@ public class PostsListFragment extends Fragment {
             }
         });
 
+        mAdapter.setOnEditClickListener(new PostsListAdapter.OnEditClickListener() {
+            @Override
+            public void onClick(int index) {
+                Log.d("TAG","item click: " + index);
+                //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
+                Post post = PostsListAdapter.mData.get(index);
+                Log.d("TAG","post id: " + post.getId());
+
+                PostsListFragmentDirections.ActionPostsListFragmentToPostFragment action =
+                        PostsListFragmentDirections.actionPostsListFragmentToPostFragment(post.getId());
+                Navigation.findNavController(view).navigate(action);
+            }
+        });
+
         mAddCardBtn = view.findViewById(R.id.cards_list_add_bt);
 //        mAddCardBtn.setOnClickListener(
 //                new View.OnClickListener() {

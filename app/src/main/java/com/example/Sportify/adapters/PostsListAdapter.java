@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.Sportify.R;
+import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Post;
 import com.squareup.picasso.Picasso;
 
@@ -22,6 +23,7 @@ import java.util.List;
 public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostRowViewHolder>{
     public static List<Post> mData;
     OnItemClickListener mListener;
+    OnEditClickListener mEditListener;
 
     public PostsListAdapter(List<Post> data) {
         mData = data;
@@ -33,13 +35,19 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     public void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
     }
+    public interface OnEditClickListener{
+        void onClick(int index);
+    }
+    public void setOnEditClickListener(OnEditClickListener listener){
+        mEditListener = listener;
+    }
 
     @NonNull
     @Override
     public PostRowViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.post_row, viewGroup,false);
-        PostRowViewHolder viewHolder = new PostRowViewHolder(view, mListener);
+        PostRowViewHolder viewHolder = new PostRowViewHolder(view, mListener, mEditListener);
         return viewHolder;
     }
 
@@ -62,9 +70,12 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         ImageView mPostImage;
         CheckBox mLikeCb;
         ImageButton mComment;
+        ImageButton mEdit;
         View mView;
+
         public PostRowViewHolder(@NonNull final View itemView,
-                                 final OnItemClickListener listener) {
+                                 final OnItemClickListener listener,
+                                 final OnEditClickListener editListener) {
             super(itemView);
             mUserImage = itemView.findViewById(R.id.post_user_img);
             mName = itemView.findViewById(R.id.post_row_user_name_tv);
@@ -73,8 +84,20 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             mPostImage = itemView.findViewById(R.id.post_row_image_view);
             mLikeCb = itemView.findViewById(R.id.post_row_like_cb);
             mComment = itemView.findViewById(R.id.post_row_comment_bt);
-
+            mEdit = itemView.findViewById(R.id.post_row_edit_bt);
             mView = itemView;
+
+            mEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int index = getAdapterPosition();
+                    if (editListener != null){
+                        if (index != RecyclerView.NO_POSITION) {
+                            editListener.onClick(index);
+                        }
+                    }
+                }
+            });
 
             mComment.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -90,6 +113,12 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         }
 
         public void bind(Post post){
+            if (post.getAuthor().getId().equals(Dao.instance.getCurrentUser().getId())){
+                // visible remove and edit buttons
+                mEdit.setVisibility(View.VISIBLE);
+            }
+            else
+                mEdit.setVisibility(View.INVISIBLE);
             mText.setText(post.getText());
             mDate.setText(post.getCreationDate());
             mName.setText(post.getAuthor().getName());
@@ -99,7 +128,6 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 mUserImage.setImageResource(R.drawable.user_default_image);
 
             if (post.getPicture() != null) {
-                Log.d("Tag", "pctureUri = " + post.getPicture());
                 Picasso.with(itemView.getContext()).load(post.getPicture()).fit().into(mPostImage);
                 mPostImage.setVisibility(View.VISIBLE);
             }

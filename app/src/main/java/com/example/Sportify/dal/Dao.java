@@ -40,6 +40,13 @@ public class Dao {
         firebaseDao.getAllPosts(listener);
     }
 
+    public interface GetPostListener {
+        void onComplete(Post post);
+    }
+    public void getPost(String postId, GetPostListener listener) {
+        firebaseDao.getPost(postId, listener);
+    }
+
     public interface AddPostListener{
         void onComplete(Post post);
     }

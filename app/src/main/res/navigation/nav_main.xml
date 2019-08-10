@@ -92,6 +92,10 @@
         <action
             android:id="@+id/action_postFragment_to_postsListFragment"
             app:destination="@id/postsListFragment" />
+        <argument
+            android:name="postId"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"

@@ -63,13 +63,9 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                                  final OnItemClickListener listener) {
             super(itemView);
             mUserImage = itemView.findViewById(R.id.comment_user_img);
-            Log.d("TAG", "CommentRowViewHolder: mUserImage = " + mUserImage);
             mName = itemView.findViewById(R.id.comment_row_user_name_tv);
-            Log.d("TAG", "CommentRowViewHolder: mName = " + mName);
             mDate = itemView.findViewById(R.id.comment_row_date_tv);
-            Log.d("TAG", "CommentRowViewHolder: mDate = " + mDate);
             mText = itemView.findViewById(R.id.comment_row_text_tv);
-            Log.d("TAG", "CommentRowViewHolder: mText = " + mText);
             mView = itemView;
 
             itemView.setOnClickListener(new View.OnClickListener() {
