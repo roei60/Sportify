@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.Sportify.R;
 import com.example.Sportify.adapters.CommentsListAdapter;
@@ -67,6 +69,37 @@ public class CommentsFragment extends Fragment {
 
         mSendBtn = view.findViewById(R.id.comments_send_btn);
         mCommentText = view.findViewById(R.id.comments_edit_text);
+
+        mAdapter.setOnDeleteClickListener(new CommentsListAdapter.OnDeleteClickListener() {
+            @Override
+            public void onClick(int index) {
+                Log.d("TAG","item click: " + index);
+                final Comment comment = CommentsListAdapter.mData.get(index);
+                Dao.instance.deleteComment(mPostId, comment.getId(), new Dao.DeleteCommentListener() {
+                    @Override
+                    public void onComplete(Void avoid) {
+                        Log.d("TAG","deleted comment id: " + comment.getId());
+                        mData.remove(comment);
+                        mAdapter.notifyDataSetChanged();
+                        Toast.makeText(getActivity(), "Comment deleted successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        mAdapter.setOnEditClickListener(new CommentsListAdapter.OnEditClickListener() {
+            @Override
+            public void onClick(int index) {
+                Log.d("TAG","item click: " + index);
+                //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
+                Comment comment = CommentsListAdapter.mData.get(index);
+                Log.d("TAG","comment id: " + comment.getId());
+
+                CommentsFragmentDirections.ActionCommentsFragmentToEditCommentFragment action =
+                        CommentsFragmentDirections.actionCommentsFragmentToEditCommentFragment(comment.getId(), mPostId);
+                Navigation.findNavController(view).navigate(action);
+            }
+        });
 
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override

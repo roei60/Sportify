@@ -439,4 +439,100 @@ public class FirebaseDao {
         });
 
     }
+
+    public void updateComment(final String postId, final Comment comment, final Dao.UpdateCommentListener listener){
+        getAllUsers(new Dao.GetAllUsersListener() {
+            @Override
+            public void onComplete(final List<User> users) {
+                db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Tag", "users task success");
+                            QuerySnapshot result = task.getResult();
+                            List<DocumentSnapshot> documents = result.getDocuments();
+                            for (DocumentSnapshot userDoc: documents) {
+                                final User user= userDoc.toObject(User.class);
+                                user.setId(userDoc.getId());
+                                userDoc.getReference().collection("Posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("Tag", "posts task success");
+                                            QuerySnapshot postsSnapshots = task.getResult();
+                                            List<DocumentSnapshot> postDocuments = postsSnapshots.getDocuments();
+                                            for (DocumentSnapshot postDoc: postDocuments) {
+                                                if (postDoc.getId().equals(postId)){
+                                                    Log.d("Tag", "found post Id$$$$$$$$$$$$$");
+                                                    postDoc.getReference().collection("Comments").document(comment.getId()).set(comment)
+                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    Log.d("Tag", "inside onComplete comment");
+                                                                    if (task.isSuccessful())
+                                                                        listener.onComplete(comment);
+                                                                    else
+                                                                        listener.onComplete(null);
+                                                                }
+                                                            });
+                                                }
+                                            }
+                                        }
+                                        else
+                                            listener.onComplete(null);
+                                    }
+                                });
+                            }
+                        }
+                        else
+                            listener.onComplete(null);
+                    }
+                });
+            }
+        });
+    }
+
+    public void deleteComment(final String postId, final String commentId, final Dao.DeleteCommentListener listener){
+
+        getPost(postId, new Dao.GetPostListener() {
+            @Override
+            public void onComplete(Post post) {
+                String userId = post.getAuthor().getId();
+                db.collection("Users").document(userId).collection("Posts").document(postId)
+                        .collection("Comments").document(commentId).delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                listener.onComplete(aVoid);
+                            }
+                        });
+            }
+        });
+    }
+
+    public void getComment(final String postId, final String commentId, final Dao.GetCommentListener listener){
+
+        getPost(postId, new Dao.GetPostListener() {
+            @Override
+            public void onComplete(Post post) {
+                String userId = post.getAuthor().getId();
+                db.collection("Users").document(userId).collection("Posts").document(postId)
+                        .collection("Comments").document(commentId).get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                final Comment comment = documentSnapshot.toObject(Comment.class);
+                                comment.setId(documentSnapshot.getId());
+                                getUser(comment.getUserId(), new Dao.GetUserDetailsListener() {
+                                    @Override
+                                    public void onComplete(User user) {
+                                        comment.setAuthor(user);
+                                        listener.onComplete(comment);
+                                    }
+                                });
+                            }
+                        });
+            }
+        });
+    }
 }

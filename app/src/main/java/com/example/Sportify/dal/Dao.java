@@ -122,4 +122,28 @@ public class Dao {
     public void addComment(String postId, Comment comment, AddCommentListener listener){
         firebaseDao.addComment(postId, comment, listener);
     }
+
+    public interface DeleteCommentListener{
+        void onComplete(Void avoid);
+    }
+
+    public void deleteComment(String postId, String commentId, DeleteCommentListener listener){
+        firebaseDao.deleteComment(postId, commentId, listener);
+    }
+
+    public interface GetCommentListener{
+        void onComplete(Comment comment);
+    }
+
+    public void getComment(String postId, String commentId, GetCommentListener listener){
+        firebaseDao.getComment(postId, commentId, listener);
+    }
+
+    public interface UpdateCommentListener{
+        void onComplete(Comment comment);
+    }
+
+    public void updateComment(String postId, Comment comment, UpdateCommentListener listener){
+        firebaseDao.updateComment(postId, comment, listener);
+    }
 }
