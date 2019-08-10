@@ -143,8 +143,8 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 mDelete.setVisibility(View.VISIBLE);
             }
             else {
-                mEdit.setVisibility(View.INVISIBLE);
-                mDelete.setVisibility(View.INVISIBLE);
+                mEdit.setVisibility(View.GONE);
+                mDelete.setVisibility(View.GONE);
             }
             mText.setText(post.getText());
             mDate.setText(post.getCreationDate());
