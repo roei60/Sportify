@@ -70,21 +70,24 @@ public class EditCommentFragment extends Fragment {
                 mText.setText(comment.getText());
                 mEditText.setText(comment.getText());
 
-//                mUpdate.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        comment.setText(mText.getText().toString());
-//                        Date date = new Date();
-//                        System.out.println(Consts.DATE_FORMAT.format(date));
-//                        comment.setCreationDate(Consts.DATE_FORMAT.format(date));
-//                        Dao.instance.updateComment(mPostId, comment, new Dao.UpdateCommentListener() {
-//                            @Override
-//                            public void onComplete(Comment comment) {
-//                                Toast.makeText(getActivity(), "Comment updated successfully!", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                    }
-//                });
+                mUpdate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        comment.setText(mEditText.getText().toString());
+                        Date date = new Date();
+                        System.out.println(Consts.DATE_FORMAT.format(date));
+                        comment.setCreationDate(Consts.DATE_FORMAT.format(date));
+                        Dao.instance.updateComment(mPostId, comment, new Dao.UpdateCommentListener() {
+                            @Override
+                            public void onComplete(Comment comment) {
+                                Toast.makeText(getActivity(), "Comment updated successfully!", Toast.LENGTH_SHORT).show();
+                                EditCommentFragmentDirections.ActionEditCommentFragmentToCommentsFragment action =
+                                        EditCommentFragmentDirections.actionEditCommentFragmentToCommentsFragment(mPostId);
+                                Navigation.findNavController(getView()).navigate(action);
+                            }
+                        });
+                    }
+                });
             }
         });
 

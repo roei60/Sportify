@@ -464,6 +464,7 @@ public class FirebaseDao {
                                             for (DocumentSnapshot postDoc: postDocuments) {
                                                 if (postDoc.getId().equals(postId)){
                                                     Log.d("Tag", "found post Id$$$$$$$$$$$$$");
+                                                    comment.setAuthor(null);
                                                     postDoc.getReference().collection("Comments").document(comment.getId()).set(comment)
                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override

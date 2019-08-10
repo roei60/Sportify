@@ -87,8 +87,11 @@ public class PostFragment extends Fragment {
                 public void onComplete(final Post post) {
                     Log.d("Tag", "post.text = " + post.getText());
                     mPostEditText.setText(post.getText());
-                    if (post.getAuthor().getImageUri() != null)
+
+                    if (post.getPicture() != null){
+                        mPostImageUri = Uri.parse(post.getPicture());
                         Picasso.with(getContext()).load(post.getPicture()).fit().into(mPostImageView);
+                    }
                     else
                         mPostImageView.setImageResource(R.drawable.user_default_image);
 
