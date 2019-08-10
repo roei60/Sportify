@@ -38,8 +38,10 @@ public class User {
     public User(){
         mUserPosts=new Vector<Post>();
     }
-
-    public void setmUserPosts(List<Post> posts){
+    public void setToken(String token){
+        this.mToken = token;
+    }
+    public void setUserPosts(List<Post> posts){
         mUserPosts=posts;
     }
 

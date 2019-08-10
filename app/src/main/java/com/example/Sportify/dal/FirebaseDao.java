@@ -147,6 +147,15 @@ public class FirebaseDao {
         });
     }
 
+    public void deletePost(final String userId, final String postId, final Dao.DeletePostListener listener) {
+        db.collection("Users").document(userId).collection("Posts").document(postId).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                listener.onComplete(aVoid);
+            }
+        });
+    }
 
     public void uploadFile(Uri imageUri, final Dao.UploadFileListener listener){
 

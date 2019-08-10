@@ -55,6 +55,14 @@ public class Dao {
         firebaseDao.addPost(post, listener);
     }
 
+    public interface DeletePostListener{
+        void onComplete(Void avoid);
+    }
+
+    public void deletePost(String userId, String postId, DeletePostListener listener) {
+        firebaseDao.deletePost(userId, postId, listener);
+    }
+
     public interface  OnUpdateComleted{
         void onUpdateCompleted(boolean success);
     }

@@ -127,6 +127,24 @@ public class PostsListFragment extends Fragment {
             }
         });
 
+        mAdapter.setOnDeleteClickListener(new PostsListAdapter.OnDeleteClickListener() {
+            @Override
+            public void onClick(int index) {
+                Log.d("TAG","item click: " + index);
+                //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
+                final Post post = PostsListAdapter.mData.get(index);
+                Dao.instance.deletePost(Dao.instance.getCurrentUser().getId(), post.getId(), new Dao.DeletePostListener() {
+                    @Override
+                    public void onComplete(Void avoid) {
+                        Log.d("TAG","deleted post id: " + post.getId());
+                        mData.remove(post);
+                        mAdapter.notifyDataSetChanged();
+                        Toast.makeText(getActivity(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
         mAddCardBtn = view.findViewById(R.id.cards_list_add_bt);
 //        mAddCardBtn.setOnClickListener(
 //                new View.OnClickListener() {

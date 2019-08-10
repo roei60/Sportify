@@ -24,6 +24,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     public static List<Post> mData;
     OnItemClickListener mListener;
     OnEditClickListener mEditListener;
+    OnDeleteClickListener mDeleteListener;
 
     public PostsListAdapter(List<Post> data) {
         mData = data;
@@ -35,6 +36,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     public void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
     }
+
     public interface OnEditClickListener{
         void onClick(int index);
     }
@@ -42,12 +44,19 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         mEditListener = listener;
     }
 
+    public interface OnDeleteClickListener{
+        void onClick(int index);
+    }
+    public void setOnDeleteClickListener(OnDeleteClickListener listener){
+        mDeleteListener = listener;
+    }
+
     @NonNull
     @Override
     public PostRowViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.post_row, viewGroup,false);
-        PostRowViewHolder viewHolder = new PostRowViewHolder(view, mListener, mEditListener);
+        PostRowViewHolder viewHolder = new PostRowViewHolder(view, mListener, mEditListener, mDeleteListener);
         return viewHolder;
     }
 
@@ -71,11 +80,13 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         CheckBox mLikeCb;
         ImageButton mComment;
         ImageButton mEdit;
+        ImageButton mDelete;
         View mView;
 
         public PostRowViewHolder(@NonNull final View itemView,
                                  final OnItemClickListener listener,
-                                 final OnEditClickListener editListener) {
+                                 final OnEditClickListener editListener,
+                                 final OnDeleteClickListener deleteListener) {
             super(itemView);
             mUserImage = itemView.findViewById(R.id.post_user_img);
             mName = itemView.findViewById(R.id.post_row_user_name_tv);
@@ -85,7 +96,20 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             mLikeCb = itemView.findViewById(R.id.post_row_like_cb);
             mComment = itemView.findViewById(R.id.post_row_comment_bt);
             mEdit = itemView.findViewById(R.id.post_row_edit_bt);
+            mDelete = itemView.findViewById(R.id.post_row_delete_bt);
             mView = itemView;
+
+            mDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int index = getAdapterPosition();
+                    if (deleteListener != null){
+                        if (index != RecyclerView.NO_POSITION) {
+                            deleteListener.onClick(index);
+                        }
+                    }
+                }
+            });
 
             mEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -116,9 +140,12 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             if (post.getAuthor().getId().equals(Dao.instance.getCurrentUser().getId())){
                 // visible remove and edit buttons
                 mEdit.setVisibility(View.VISIBLE);
+                mDelete.setVisibility(View.VISIBLE);
             }
-            else
+            else {
                 mEdit.setVisibility(View.INVISIBLE);
+                mDelete.setVisibility(View.INVISIBLE);
+            }
             mText.setText(post.getText());
             mDate.setText(post.getCreationDate());
             mName.setText(post.getAuthor().getName());
