@@ -19,8 +19,8 @@ public interface UserDao {
     void deleteAll();
 
     @Query("SELECT * from user_table")
-    LiveData<List<User>> getAllProperty();
+    LiveData<List<User>> getAllUsers();
 
     @Query("SELECT * FROM user_table WHERE user_id= :userId")
-    LiveData<User> getPropertyById(int userId);
+    LiveData<User> getUserById(int userId);
 }
