@@ -31,6 +31,10 @@ public class User {
     @Ignore
     private List<Post> mUserPosts;
 
+    public User(){
+        mUserPosts=new Vector<Post>();
+    }
+
     public User(User user) {
         this.mId=user.mId;
         this.mName=user.mName;
@@ -38,6 +42,12 @@ public class User {
         mImageUri=user.mImageUri;
         lastUpdate=user.lastUpdate;
         mUserPosts=new Vector<Post>(user.mUserPosts);
+    }
+
+    public User(String name, String email, String imageUri){
+        mName = name;
+        mEmail = email;
+        mImageUri = imageUri;
     }
 
     public  List<Post> getPosts(){return mUserPosts;}
@@ -55,9 +65,6 @@ public class User {
     public Timestamp getLastUpdate() { return lastUpdate;}
     public String getImageUri() {return this.mImageUri;}
 
-    public User(){
-        mUserPosts=new Vector<Post>();
-    }
     public void setLastUpdate(@Nullable Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
@@ -76,9 +83,7 @@ public class User {
         this.mImageUri = imageUri;
     }
 
-    public User(String name, String email, String imageUri){
-        mName = name;
-        mEmail = email;
-        mImageUri = imageUri;
+    public void setmUserPosts(List<Post> mUserPosts) {
+        this.mUserPosts = mUserPosts;
     }
 }

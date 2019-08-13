@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity  implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Dao.instance.init(this.getApplication());
         setContentView(R.layout.activity_main);
 
         setDrawerEnabled(false);

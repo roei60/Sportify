@@ -22,5 +22,5 @@ public interface UserDao {
     LiveData<List<User>> getAllUsers();
 
     @Query("SELECT * FROM user_table WHERE user_id= :userId")
-    LiveData<User> getUserById(int userId);
+    LiveData<User> getUserById(String userId);
 }

@@ -26,6 +26,7 @@ public class Post {
     @NonNull
     @ColumnInfo(name = "post_id")
     private String mId;
+    @Ignore
     private User mAuthor; // will contain data of user created post
     private String mAuthorId;
     private String mText; // actual post text
@@ -53,7 +54,19 @@ public class Post {
         this(author, text, creationDate, null, new ArrayList<String>(), new ArrayList<Comment>());
     }
 
-    public Post(User author, String text,String creationDate, String picture, List<String> likers, List<Comment> comments) {
+    public Post(@NonNull String mId, User mAuthor, String mAuthorId, String mText, String mPicture, List<String> mLikers, List<Comment> mComments, String mCreationDate, Timestamp lastUpdate) {
+        this.mId = mId;
+        this.mAuthor = mAuthor;
+        this.mAuthorId = mAuthorId;
+        this.mText = mText;
+        this.mPicture = mPicture;
+        this.mLikers = mLikers;
+        this.mComments = mComments;
+        this.mCreationDate = mCreationDate;
+        this.lastUpdate = lastUpdate;
+    }
+
+    public Post(User author, String text, String creationDate, String picture, List<String> likers, List<Comment> comments) {
         this.mId = java.util.UUID.randomUUID().toString();
         this.mAuthor = author;
         this.mText = text;
@@ -141,13 +154,11 @@ public class Post {
         this.lastUpdate = lastUpdate;
     }
 
-    public String getmAuthorId() {
-        mAuthorId=mAuthor.getId();
+    public String getAuthorId() {
         return mAuthorId;
     }
 
-    public void setmAuthorId(String AuthorId) {
-        this.mAuthorId = mAuthorId;
-        mAuthor.setId(AuthorId);
+    public void setAuthorId(String AuthorId) {
+        this.mAuthorId = AuthorId;
     }
 }

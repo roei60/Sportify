@@ -3,6 +3,7 @@ package com.example.Sportify.models;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -21,16 +22,17 @@ public class Comment {
     @ColumnInfo(name = "comment_id")
     private String mId;
     private String mUserId;
+    @Ignore
     private User mAuthor; // will contain data of user created comment
     private String mText; // actual comment text
     private String mCreationDate;
     private Timestamp lastUpdate;
 
-    public String getmPostId() {
+    public String getPostId() {
         return mPostId;
     }
 
-    public void setmPostId(String mPostId) {
+    public void setPostId(String mPostId) {
         this.mPostId = mPostId;
     }
 

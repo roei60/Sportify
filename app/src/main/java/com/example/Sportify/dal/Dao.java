@@ -1,13 +1,18 @@
 package com.example.Sportify.dal;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
+import com.example.Sportify.room.PostRepository;
 
 import java.security.PublicKey;
 import java.text.DateFormat;
@@ -21,7 +26,6 @@ public class Dao {
     User currentUser;
     private SharedPreferences sharedPreferences;
     private static String LAST_UPDATED_KEY = "lastUpdatedTimestamp";
-
     public void setCurrentUser(User user)
     {
         this.currentUser=user;
@@ -30,18 +34,37 @@ public class Dao {
     {
         return this.currentUser;
     }
+
+    public String getCurrentUserId()
+    {
+        return firebaseDao.auth.getCurrentUser().getUid();
+    }
     //ModelSql modelSql;
     FirebaseDao firebaseDao;
+
+    private PostRepository mPostRepository;
+
     private Dao() {
         //modelSql = new ModelSql();
         firebaseDao = new FirebaseDao();
 //        sharedPreferences = .getSharedPreferences("RepositoryPrefs", Context.MODE_PRIVATE);
         firebaseDao.getAllPosts(0, firebaseListener);
+        firebaseDao.getAllUsers(0,firebaseListener);
+    }
 
+    public void init(Application application) {
+        mPostRepository = new PostRepository(application);
+        sharedPreferences = application.getSharedPreferences("RepositoryPrefs", Context.MODE_PRIVATE);
     }
     IFirebaseListener firebaseListener=new IFirebaseListener() {
         @Override
         public void updatePosts(List<Post> posts) {
+
+            Log.d("Tag", "########### posts num: " + posts.size());
+            for (Post post:posts) {
+                post.setAuthorId(post.getAuthor().getId());
+                mPostRepository.insert(post);
+            }
 
             Log.d("bblls","fff");
         }
@@ -50,8 +73,23 @@ public class Dao {
         public void updatedCommentsForPosts(int propertyId, List<Comment> commentList) {
 
         }
+
+        @Override
+        public void updateUsers(List<User> users) {
+            Log.d("Tag", "########### posts num: " + users.size());
+            for (User user:users) {
+                mPostRepository.insert(user);
+            }
+        }
     };
 
+    public void observePostsLiveData(LifecycleOwner lifecycleOwner, Observer<List<Post>> observer) {
+        mPostRepository.getAllPosts().observe(lifecycleOwner, observer);
+    }
+    public User getUserById(String id)
+    {
+        return  mPostRepository.getUserById(id);
+    }
 
     public interface GetAllPostsListener {
         void onComplete(List<Post> data);

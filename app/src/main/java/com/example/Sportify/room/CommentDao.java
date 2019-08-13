@@ -21,5 +21,5 @@ public interface CommentDao {
     void deleteAll();
 
     @Query("SELECT * from comment_table WHERE mPostId=:postId")
-    LiveData<List<Post>> getAllPostsByUserId(String postId);
+    LiveData<List<Comment>> getAllCommentByPostId(String postId);
 }

@@ -554,4 +554,30 @@ public class FirebaseDao {
             }
         });
     }
+
+    public void getAllUsers(long updateFrom,final IFirebaseListener listener) {
+        Timestamp timeStamp;
+        if(updateFrom==0)
+            timeStamp = DateTimeUtils.getTimeStamp(2019, 1, 1);
+        else
+            timeStamp=DateTimeUtils.getTimestampFromLong(updateFrom);
+        getAllUsers(timeStamp,listener);
+    }
+    private  void getAllUsers(Timestamp from, IFirebaseListener listener)
+    {
+        listenerRegistration = userRef.whereGreaterThan("lastUpdate", from).addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                return;
+            }
+            if (snapshot != null && !snapshot.isEmpty()) {
+                List<User> users= new ArrayList<>();
+                snapshot.getDocumentChanges().get(0).getDocument().toObject(User.class);
+                for (DocumentChange docChange : snapshot.getDocumentChanges()) {
+                    users.add(docChange.getDocument().toObject(User.class));
+                }
+                users= snapshot.toObjects(User.class);
+                listener.updateUsers(users);
+            }
+        });
+    }
 }

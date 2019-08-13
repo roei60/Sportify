@@ -28,8 +28,6 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -156,7 +154,7 @@ public class PostFragment extends Fragment {
 
         Calendar now = Calendar.getInstance();
         post.setLastUpdate(DateTimeUtils.getTimeStamp(now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH)));
-
+        post.setAuthorId(post.getAuthor().getId());
         Dao.instance.addPost(post, new Dao.AddPostListener() {
             @Override
             public void onComplete(Post post) {
