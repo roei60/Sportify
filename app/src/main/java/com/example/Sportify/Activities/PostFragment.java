@@ -22,6 +22,7 @@ import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.utils.Consts;
+import com.example.Sportify.utils.DateTimeUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -29,6 +30,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
@@ -150,6 +152,11 @@ public class PostFragment extends Fragment {
             post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date), imageUri.toString());
         else
             post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date));
+        post.setAuthor(Dao.instance.getCurrentUser());
+
+        Calendar now = Calendar.getInstance();
+        post.setLastUpdate(DateTimeUtils.getTimeStamp(now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH)));
+
         Dao.instance.addPost(post, new Dao.AddPostListener() {
             @Override
             public void onComplete(Post post) {

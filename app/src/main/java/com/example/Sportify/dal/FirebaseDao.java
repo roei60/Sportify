@@ -8,19 +8,24 @@ import androidx.annotation.NonNull;
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
+import com.example.Sportify.utils.DateTimeUtils;
 import com.example.Sportify.utils.FileUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -28,10 +33,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Vector;
 
 import javax.annotation.Nullable;
@@ -41,6 +49,10 @@ public class FirebaseDao {
     FirebaseFirestore db;
     FirebaseAuth auth;
     StorageReference storage;
+    CollectionReference userRef;
+    CollectionReference postRef;
+    CollectionReference commentRef;
+    private ListenerRegistration listenerRegistration;
 
     public FirebaseDao() {
         db = FirebaseFirestore.getInstance();
@@ -50,47 +62,53 @@ public class FirebaseDao {
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(false).build();
         db.setFirestoreSettings(settings);
+
+        userRef=db.collection("Users");
+        postRef=db.collection("Posts");
+        commentRef=db.collection("Comments");
     }
 
-    public void getAllPosts(final Dao.GetAllPostsListener listener) {
-        db.collection("Users")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        final List<Post> data = new Vector<>();
-                        if (e != null) {
-                            listener.onComplete(data);
-                            return;
-                        }
-                        for (QueryDocumentSnapshot userDoc : queryDocumentSnapshots) {
-                            final User user = userDoc.toObject(User.class);
-                            user.setId(userDoc.getId());
-                            userDoc.getReference().collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                    for(QueryDocumentSnapshot postDoc: queryDocumentSnapshots)
-                                    {
-                                        Post post = postDoc.toObject(Post.class);
-                                        post.setId(postDoc.getId());
-                                        post.setAuthor(user);
-                                        data.add(post);
-                                    }
-                                    listener.onComplete(data);
-                                }
-                            });
-                        }
-                    }
-                });
+    public void getAllPosts(long updateFrom,final IFirebaseListener listener) {
+        Timestamp timeStamp;
+        if(updateFrom==0)
+            timeStamp = DateTimeUtils.getTimeStamp(2019, 1, 1);
+        else
+            timeStamp=DateTimeUtils.getTimestampFromLong(updateFrom);
+        getAllPosts(timeStamp,listener);
+    }
+    private  void getAllPosts(Timestamp from, IFirebaseListener listener)
+    {
+        listenerRegistration = postRef.whereGreaterThan("lastUpdate", from).addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                return;
+            }
+            if (snapshot != null && !snapshot.isEmpty()) {
+                List<Post> posts= new ArrayList<>();
+                snapshot.getDocumentChanges().get(0).getDocument().toObject(Post.class);
+                for (DocumentChange docChange : snapshot.getDocumentChanges()) {
+                    posts.add(docChange.getDocument().toObject(Post.class));
+                }
+                posts= snapshot.toObjects(Post.class);
+                listener.updatePosts(posts);
+            }
+        });
     }
 
     public void addPost(final Post post, final Dao.AddPostListener listener) {
-        db.collection("Users").document(auth.getCurrentUser().getUid()).collection("Posts").document(post.getId()).set(post)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        listener.onComplete(post);
-                    }
-                });
+
+        postRef.add(post).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (task.getResult() != null && task.isSuccessful()) {
+                    post.setId(task.getResult().getId());
+                    task.getResult().set(post);
+                    listener.onComplete(post);
+                }
+                else
+                    listener.onComplete(null);
+            }
+        });
+
     }
 
     public void getPost(final String id, final Dao.GetPostListener listener) {

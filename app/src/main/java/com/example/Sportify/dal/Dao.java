@@ -1,6 +1,9 @@
 package com.example.Sportify.dal;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.Log;
 
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
@@ -16,6 +19,8 @@ import java.util.Vector;
 public class Dao {
     final public static Dao instance = new Dao();
     User currentUser;
+    private SharedPreferences sharedPreferences;
+    private static String LAST_UPDATED_KEY = "lastUpdatedTimestamp";
 
     public void setCurrentUser(User user)
     {
@@ -30,14 +35,29 @@ public class Dao {
     private Dao() {
         //modelSql = new ModelSql();
         firebaseDao = new FirebaseDao();
+//        sharedPreferences = .getSharedPreferences("RepositoryPrefs", Context.MODE_PRIVATE);
+        firebaseDao.getAllPosts(0, firebaseListener);
+
     }
+    IFirebaseListener firebaseListener=new IFirebaseListener() {
+        @Override
+        public void updatePosts(List<Post> posts) {
+
+            Log.d("bblls","fff");
+        }
+
+        @Override
+        public void updatedCommentsForPosts(int propertyId, List<Comment> commentList) {
+
+        }
+    };
 
 
     public interface GetAllPostsListener {
         void onComplete(List<Post> data);
     }
-    public void getAllPosts(GetAllPostsListener listener) {
-        firebaseDao.getAllPosts(listener);
+    public void getAllPosts(long from,IFirebaseListener listener) {
+        firebaseDao.getAllPosts(from,listener);
     }
 
     public interface GetPostListener {

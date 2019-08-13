@@ -162,7 +162,7 @@ public class PostsListFragment extends Fragment {
         mProgressBar.setVisibility(View.INVISIBLE);
         setHasOptionsMenu(true);
 
-        Dao.instance.getAllPosts(new Dao.GetAllPostsListener() {
+        /*Dao.instance.getAllPosts(new Dao.GetAllPostsListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onComplete(List<Post> data) {
@@ -184,7 +184,7 @@ public class PostsListFragment extends Fragment {
                 mAdapter.mData = data;
                 mAdapter.notifyDataSetChanged();
             }
-        });
+        });*/
 
         return view;
     }

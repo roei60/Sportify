@@ -1,0 +1,13 @@
+package com.example.Sportify.dal;
+
+import com.example.Sportify.models.Comment;
+import com.example.Sportify.models.Post;
+
+import java.util.List;
+
+public interface IFirebaseListener {
+
+    void updatePosts(List<Post> posts);
+
+    void updatedCommentsForPosts(int postId, List<Comment> commentList);
+}
