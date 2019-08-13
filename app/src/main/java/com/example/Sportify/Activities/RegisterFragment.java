@@ -192,7 +192,7 @@ public class RegisterFragment extends Fragment {
                 if(!mIsSignIn) {
                     mProgressDialog.setMessage("Registering user...");
                     mProgressDialog.show();
-                    User user=new User(mName,mEmail,"",null);
+                    User user=new User(mName,mEmail,"");
 
                     Dao.instance.register(user, mPassword, mUserImageUri, new Dao.OnUpdateComleted() {
                         @Override
@@ -279,7 +279,7 @@ public class RegisterFragment extends Fragment {
     {
         // create user in DB
         final FirebaseUser currentUser = mFireBashAuth.getCurrentUser();
-        User user = new User(mName, mEmail, FirebaseInstanceId.getInstance().getToken(), imageUri);
+        User user = new User(mName, mEmail, imageUri);
         String userId = currentUser.getUid();
         mDatabaseRef.child(userId).setValue(user);
         mProgressDialog.dismiss();

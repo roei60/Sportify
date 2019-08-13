@@ -2,19 +2,40 @@ package com.example.Sportify.models;
 
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.Sportify.room.ListConverters;
+import com.example.Sportify.room.TimestampConverters;
+import com.google.firebase.Timestamp;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings({"unused", "NullableProblems"})
+@Entity(tableName = "post_table")
+@TypeConverters({TimestampConverters.class, ListConverters.class})
 public class Post {
 
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "post_id")
     private String mId;
     private User mAuthor; // will contain data of user created post
+    private String mAuthorId;
     private String mText; // actual post text
     private String mPicture; // url of picture in post from DB
+    @Ignore
     private List<String> mLikers; // list of IDs of users liked the post
+    @Ignore
     private List<Comment> mComments;
     private String mCreationDate;
+    private Timestamp lastUpdate;
 
     public Post(){
         // Need empty ctor for deserialization from DB
@@ -110,5 +131,23 @@ public class Post {
 
     public void removeComment(String commentId){
         // remove comment from DB and comments list
+    }
+
+    public Timestamp getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Timestamp lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    public String getmAuthorId() {
+        mAuthorId=mAuthor.getId();
+        return mAuthorId;
+    }
+
+    public void setmAuthorId(String AuthorId) {
+        this.mAuthorId = mAuthorId;
+        mAuthor.setId(AuthorId);
     }
 }
