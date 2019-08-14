@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.Sportify.models.Comment;
@@ -84,8 +85,12 @@ public class Dao {
         }
     };
 
-    public void observePostsLiveData(LifecycleOwner lifecycleOwner, Observer<List<PostAndUser>> observer) {
+    public void observePostsListLiveData(LifecycleOwner lifecycleOwner, Observer<List<PostAndUser>> observer) {
+        mPostRepository.getAllPosts().removeObservers(lifecycleOwner);
         mPostRepository.getAllPosts().observe(lifecycleOwner, observer);
+    }
+    public void observePostLiveData(LifecycleOwner lifecycleOwner,String postId ,Observer<Post> observer) {
+        mPostRepository.getPostById(postId).observe(lifecycleOwner, observer);
     }
     public void observeUsersLiveData(LifecycleOwner lifecycleOwner, Observer<List<User>> observer) {
         mPostRepository.getAllUsers().observe(lifecycleOwner, observer);
@@ -102,11 +107,9 @@ public class Dao {
         firebaseDao.getAllPosts(from,listener);
     }
 
-    public interface GetPostListener {
-        void onComplete(Post post);
-    }
-    public void getPost(String postId, GetPostListener listener) {
-        firebaseDao.getPost(postId, listener);
+
+    public LiveData<Post> getPost(String postId) {
+        return mPostRepository.getPostById(postId);
     }
 
     public interface AddPostListener{

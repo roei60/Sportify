@@ -1,8 +1,5 @@
 package com.example.Sportify.viewModels;
 
-import android.app.Application;
-
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -10,9 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 
 import com.example.Sportify.dal.Dao;
-import com.example.Sportify.models.Post;
 import com.example.Sportify.models.PostAndUser;
-import com.example.Sportify.models.User;
 
 import java.util.List;
 
@@ -25,11 +20,12 @@ public class PostsListViewModel extends ViewModel {
 
 
     public void observePostsList(LifecycleOwner lifecycleOwner, Observer<List<PostAndUser>> observer) {
+        mPostsLiveData.removeObservers(lifecycleOwner);
         mPostsLiveData.observe(lifecycleOwner, observer);
     }
 
     public void init(LifecycleOwner lifecycleOwner) {
-        Dao.instance.observePostsLiveData(lifecycleOwner, posts -> mPostsLiveData.postValue(posts));
+        Dao.instance.observePostsListLiveData(lifecycleOwner, posts -> mPostsLiveData.postValue(posts));
 
     }
 }

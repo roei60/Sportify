@@ -4,6 +4,7 @@ package com.example.Sportify.Activities;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
@@ -82,7 +83,6 @@ public class PostsListFragment extends Fragment {
 
     private ProgressBar mProgressBar;
     private SearchView searchView;
-    private PostsListViewModel viewModel;
 
     public PostsListFragment() {
         // Required empty public constructor
@@ -102,22 +102,26 @@ public class PostsListFragment extends Fragment {
 
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mAdapter = new PostsListAdapter(mPosts);
-        mRecyclerView.setAdapter(mAdapter);
-
         mProgressBar = view.findViewById(R.id.cards_list_pb);
         mProgressBar.setVisibility(View.INVISIBLE);
         setHasOptionsMenu(true);
 
-        viewModel = ViewModelProviders.of(this).get(PostsListViewModel.class);
 
-        viewModel.observePostsList(getViewLifecycleOwner(), posts -> {
+
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+       super.onViewCreated(view,savedInstanceState);
+       PostsListViewModel viewModel = ViewModelProviders.of(this).get(PostsListViewModel.class);
+       viewModel.observePostsList(getViewLifecycleOwner(), posts -> {
             if (posts != null) {
                 this.mPosts.clear();
                 this.mPosts.addAll(posts);
                 if (mAdapter == null) {
-                    mAdapter = new PostsListAdapter(this.mPosts);
+                    mAdapter = new PostsListAdapter( this.mPosts);
                     mRecyclerView.setAdapter(mAdapter);
                     addButtonsClickListeners(view);
                 } else {
@@ -126,12 +130,10 @@ public class PostsListFragment extends Fragment {
             }
         });
 
-
         viewModel.init(getViewLifecycleOwner());
-        return view;
-    }
 
-    private void addButtonsClickListeners(View view) {
+    }
+        private void addButtonsClickListeners(View view) {
         // TODO: Navigate to cardDetails fragment
         mAdapter.setOnItemClickListener(new PostsListAdapter.OnItemClickListener() {
             @Override
