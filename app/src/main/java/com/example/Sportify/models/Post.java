@@ -5,6 +5,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -17,8 +18,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.google.gson.internal.$Gson$Types.arrayOf;
+
 @SuppressWarnings({"unused", "NullableProblems"})
-@Entity(tableName = "post_table")
+
+@Entity(tableName = "post_table",foreignKeys = @ForeignKey(entity = User.class,
+        parentColumns = "user_id",
+        childColumns = "mAuthorId",
+        onDelete = ForeignKey.CASCADE))
+
+//@Entity(tableName = "post_table")
 @TypeConverters({TimestampConverters.class, ListConverters.class})
 public class Post {
 
@@ -36,6 +45,7 @@ public class Post {
     @Ignore
     private List<Comment> mComments;
     private String mCreationDate;
+    @ColumnInfo(name = "post_lastUpdate")
     private Timestamp lastUpdate;
 
     public Post(){

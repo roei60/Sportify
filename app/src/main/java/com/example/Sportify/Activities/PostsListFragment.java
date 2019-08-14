@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.Sportify.Adapters.PostsListAdapter;
 import com.example.Sportify.R;
 
 import android.app.SearchManager;
@@ -22,6 +23,8 @@ import android.os.Bundle;
 
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Post;
+import com.example.Sportify.models.PostAndUser;
+import com.example.Sportify.models.User;
 import com.example.Sportify.utils.Consts;
 import com.example.Sportify.viewModels.PostsListViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,7 +47,7 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.example.Sportify.adapters.PostsListAdapter;
+import com.example.Sportify.Adapters.PostsListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -69,7 +72,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class PostsListFragment extends Fragment {
     PostsListAdapter mAdapter;
-    List<Post> mPosts = new Vector<>();
+    List<PostAndUser> mPosts = new Vector<>();
 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
@@ -123,6 +126,7 @@ public class PostsListFragment extends Fragment {
             }
         });
 
+
         viewModel.init(getViewLifecycleOwner());
         return view;
     }
@@ -134,11 +138,11 @@ public class PostsListFragment extends Fragment {
             public void onClick(int index) {
                 Log.d("TAG","item click: " + index);
                 //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
-                Post post = PostsListAdapter.mData.get(index);
-                Log.d("TAG","post id: " + post.getId());
+                PostAndUser post = PostsListAdapter.mData.get(index);
+                Log.d("TAG","post id: " + post.getPost().getId());
 
                 PostsListFragmentDirections.ActionPostsListFragmentToCommentsFragment action =
-                        PostsListFragmentDirections.actionPostsListFragmentToCommentsFragment(post.getId());
+                        PostsListFragmentDirections.actionPostsListFragmentToCommentsFragment(post.getPost().getId());
                 Navigation.findNavController(view).navigate(action);
             }
         });
@@ -148,11 +152,11 @@ public class PostsListFragment extends Fragment {
             public void onClick(int index) {
                 Log.d("TAG","item click: " + index);
                 //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
-                Post post = PostsListAdapter.mData.get(index);
-                Log.d("TAG","post id: " + post.getId());
+                PostAndUser post = PostsListAdapter.mData.get(index);
+                Log.d("TAG","post id: " + post.getPost().getId());
 
                 PostsListFragmentDirections.ActionPostsListFragmentToPostFragment action =
-                        PostsListFragmentDirections.actionPostsListFragmentToPostFragment(post.getId());
+                        PostsListFragmentDirections.actionPostsListFragmentToPostFragment(post.getPost().getId());
                 Navigation.findNavController(view).navigate(action);
             }
         });
@@ -162,11 +166,11 @@ public class PostsListFragment extends Fragment {
             public void onClick(int index) {
                 Log.d("TAG","item click: " + index);
                 //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
-                final Post post = PostsListAdapter.mData.get(index);
-                Dao.instance.deletePost(Dao.instance.getCurrentUser().getId(), post.getId(), new Dao.DeletePostListener() {
+                final PostAndUser post = PostsListAdapter.mData.get(index);
+                Dao.instance.deletePost(Dao.instance.getCurrentUser().getId(), post.getPost().getId(), new Dao.DeletePostListener() {
                     @Override
                     public void onComplete(Void avoid) {
-                        Log.d("TAG","deleted post id: " + post.getId());
+                        Log.d("TAG","deleted post id: " + post.getPost().getId());
                         mPosts.remove(post);
                         mAdapter.notifyDataSetChanged();
                         Toast.makeText(getActivity(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();

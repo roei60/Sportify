@@ -12,7 +12,7 @@ import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
 
-@Database(entities = {Post.class, Comment.class, User.class}, version = 1)
+@Database(entities = {Post.class, Comment.class, User.class}, version = 5)
 public abstract class PostRoomDatabase extends RoomDatabase {
     public abstract PostDao postDao();
     public abstract CommentDao commentsDao();
@@ -36,6 +36,7 @@ public abstract class PostRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             PostRoomDatabase.class, "app_database")
                             .addCallback(sRoomDatabaseCallback)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

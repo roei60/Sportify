@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
+import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
 import com.example.Sportify.room.PostRepository;
 
@@ -83,8 +84,11 @@ public class Dao {
         }
     };
 
-    public void observePostsLiveData(LifecycleOwner lifecycleOwner, Observer<List<Post>> observer) {
+    public void observePostsLiveData(LifecycleOwner lifecycleOwner, Observer<List<PostAndUser>> observer) {
         mPostRepository.getAllPosts().observe(lifecycleOwner, observer);
+    }
+    public void observeUsersLiveData(LifecycleOwner lifecycleOwner, Observer<List<User>> observer) {
+        mPostRepository.getAllUsers().observe(lifecycleOwner, observer);
     }
     public User getUserById(String id)
     {

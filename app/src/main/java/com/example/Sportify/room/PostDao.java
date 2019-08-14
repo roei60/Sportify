@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.example.Sportify.models.Post;
+import com.example.Sportify.models.PostAndUser;
 
 import java.util.List;
 
@@ -19,8 +20,9 @@ public interface PostDao {
     @Query("DELETE FROM post_table")
     void deleteAll();
 
-    @Query("SELECT * from post_table")
-    LiveData<List<Post>> getAllPosts();
+    @Query("SELECT * from post_table" +
+            " INNER JOIN user_table ON mAuthorId=user_id")
+    LiveData<List<PostAndUser>> getAllPosts();
 
     @Query("SELECT * from post_table WHERE post_id=:postId")
     LiveData<Post> getPostById(String postId);

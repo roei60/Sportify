@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
+import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
 
 import java.util.List;
@@ -17,7 +18,8 @@ public class PostRepository {
     private PostDao mPostDao;
     private UserDao mUserDao;
     private CommentDao mCommentDao;
-    private LiveData<List<Post>> mAllPosts;
+    private LiveData<List<PostAndUser>> mAllPosts;
+    private LiveData<List<User>> mAllUsers;
 
     public PostRepository(Application application) {
         PostRoomDatabase db = PostRoomDatabase.getDatabase(application);
@@ -25,11 +27,15 @@ public class PostRepository {
         mCommentDao = db.commentsDao();
         mUserDao= db.userDao();
         mAllPosts = mPostDao.getAllPosts();
+        mAllUsers = mUserDao.getAllUsers();
 
     }
 
-    public LiveData<List<Post>> getAllPosts() {
+    public LiveData<List<PostAndUser>> getAllPosts() {
         return mAllPosts;
+    }
+    public LiveData<List<User>> getAllUsers() {
+        return mAllUsers;
     }
 
     public LiveData<List<Post>> getPostByUserId(String  userId){

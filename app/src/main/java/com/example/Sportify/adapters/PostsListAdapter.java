@@ -1,4 +1,4 @@
-package com.example.Sportify.adapters;
+package com.example.Sportify.Adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,17 +16,19 @@ import android.widget.TextView;
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Post;
+import com.example.Sportify.models.PostAndUser;
+import com.example.Sportify.models.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostRowViewHolder>{
-    public static List<Post> mData;
+    public static List<PostAndUser> mData;
     OnItemClickListener mListener;
     OnEditClickListener mEditListener;
     OnDeleteClickListener mDeleteListener;
 
-    public PostsListAdapter(List<Post> data) {
+    public PostsListAdapter(List<PostAndUser> data) {
         mData = data;
     }
 
@@ -62,7 +64,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
     @Override
     public void onBindViewHolder(@NonNull PostRowViewHolder postRowViewHolder, int i) {
-        Post post = mData.get(i);
+        PostAndUser post = mData.get(i);
         postRowViewHolder.bind(post);
     }
 
@@ -136,9 +138,11 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             });
         }
 
-        public void bind(Post post){
-            post.setAuthor(Dao.instance.getUserById(post.getAuthorId()));
-            if (post.getAuthorId().equals(Dao.instance.getCurrentUserId())){
+        public void bind(PostAndUser post1){
+            Post post=post1.getPost();
+            User user=post1.getUser();
+            //post.setAuthor(Dao.instance.getUserById(post.getAuthorId()));
+            if (user.getId().equals(Dao.instance.getCurrentUserId())){
                 // visible remove and edit buttons
                 mEdit.setVisibility(View.VISIBLE);
                 mDelete.setVisibility(View.VISIBLE);
@@ -149,9 +153,9 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             }
             mText.setText(post.getText());
             mDate.setText(post.getCreationDate());
-            mName.setText(post.getAuthor().getName());
-            if (post.getAuthor().getImageUri() != null)
-                Picasso.with(itemView.getContext()).load(post.getAuthor().getImageUri()).fit().into(mUserImage);
+            mName.setText(user.getName());
+            if (user.getImageUri() != null)
+                Picasso.with(itemView.getContext()).load(user.getImageUri()).fit().into(mUserImage);
             else
                 mUserImage.setImageResource(R.drawable.user_default_image);
 
