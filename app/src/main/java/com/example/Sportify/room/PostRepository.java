@@ -65,6 +65,10 @@ public class PostRepository {
         new insertAsyncTask(mCommentDao).execute(comment);
     }
 
+    public void deletePost(String postId) {
+        new deletePostAsyncTask(mPostDao).execute(postId);
+    }
+
     private static class insertAsyncTask extends AsyncTask<Comment, Void, Void> {
 
         private CommentDao mAsyncTaskDao;
@@ -105,6 +109,21 @@ public class PostRepository {
         @Override
         protected Void doInBackground(final User... params) {
             mAsyncTaskDao.insertUser(params[0]);
+            return null;
+        }
+    }
+
+    private static class deletePostAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private PostDao mAsyncTaskDao;
+
+        public deletePostAsyncTask(PostDao  dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final String... params) {
+            mAsyncTaskDao.delete(params[0]);
             return null;
         }
     }

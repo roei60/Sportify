@@ -78,7 +78,7 @@ public class Dao {
 
         @Override
         public void updateUsers(List<User> users) {
-            Log.d("Tag", "########### posts num: " + users.size());
+            Log.d("Tag", "$$$$$$$$ users num: " + users.size());
             for (User user:users) {
                 mPostRepository.insert(user);
             }
@@ -124,8 +124,9 @@ public class Dao {
         void onComplete(Void avoid);
     }
 
-    public void deletePost(String userId, String postId, DeletePostListener listener) {
-        firebaseDao.deletePost(userId, postId, listener);
+    public void deletePost(String postId, DeletePostListener listener) {
+        firebaseDao.deletePost(postId, listener);
+        mPostRepository.deletePost(postId);
     }
 
     public interface  OnUpdateComleted{

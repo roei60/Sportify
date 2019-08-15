@@ -2,6 +2,7 @@ package com.example.Sportify.room;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -29,5 +30,8 @@ public interface PostDao {
 
     @Query("SELECT * from post_table WHERE mAuthorId =:authorId ")
     LiveData<List<Post>> getAllPostsByUserId(String authorId);
+
+    @Query("DELETE FROM post_table WHERE post_id=:postId")
+    void delete(String postId);
 
 }

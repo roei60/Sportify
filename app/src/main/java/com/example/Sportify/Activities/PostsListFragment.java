@@ -104,10 +104,6 @@ public class PostsListFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mProgressBar = view.findViewById(R.id.cards_list_pb);
         mProgressBar.setVisibility(View.INVISIBLE);
-        setHasOptionsMenu(true);
-
-
-
 
         return view;
     }
@@ -169,7 +165,7 @@ public class PostsListFragment extends Fragment {
                 Log.d("TAG","item click: " + index);
                 //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
                 final PostAndUser post = PostsListAdapter.mData.get(index);
-                Dao.instance.deletePost(Dao.instance.getCurrentUser().getId(), post.getPost().getId(), new Dao.DeletePostListener() {
+                Dao.instance.deletePost(post.getPost().getId(), new Dao.DeletePostListener() {
                     @Override
                     public void onComplete(Void avoid) {
                         Log.d("TAG","deleted post id: " + post.getPost().getId());
