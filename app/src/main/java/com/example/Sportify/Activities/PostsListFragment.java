@@ -98,10 +98,10 @@ public class PostsListFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_posts_list, container, false);
         mRecyclerView = view.findViewById(R.id.cards_list_rv);
-        mRecyclerView.setHasFixedSize(true);
-
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
         mProgressBar = view.findViewById(R.id.cards_list_pb);
         mProgressBar.setVisibility(View.INVISIBLE);
 
@@ -119,16 +119,25 @@ public class PostsListFragment extends Fragment {
                 if (mAdapter == null) {
                     mAdapter = new PostsListAdapter( this.mPosts);
                     mRecyclerView.setAdapter(mAdapter);
-                    addButtonsClickListeners(view);
                 } else {
+                    mRecyclerView.setAdapter(mAdapter);
                     mAdapter.notifyDataSetChanged();
                 }
+                addButtonsClickListeners(view);
             }
         });
 
         viewModel.init(getViewLifecycleOwner());
 
     }
+
+    private void removeButtonsListeners(){
+        Log.d("TAG","before remove buttons listeners");
+        mAdapter.setOnEditClickListener(null);
+        mAdapter.setOnItemClickListener(null);
+        mAdapter.setOnDeleteClickListener(null);
+    }
+
         private void addButtonsClickListeners(View view) {
         // TODO: Navigate to cardDetails fragment
         mAdapter.setOnItemClickListener(new PostsListAdapter.OnItemClickListener() {
@@ -142,6 +151,8 @@ public class PostsListFragment extends Fragment {
                 PostsListFragmentDirections.ActionPostsListFragmentToCommentsFragment action =
                         PostsListFragmentDirections.actionPostsListFragmentToCommentsFragment(post.getPost().getId());
                 Navigation.findNavController(view).navigate(action);
+
+                removeButtonsListeners();
             }
         });
 
@@ -156,6 +167,8 @@ public class PostsListFragment extends Fragment {
                 PostsListFragmentDirections.ActionPostsListFragmentToPostFragment action =
                         PostsListFragmentDirections.actionPostsListFragmentToPostFragment(post.getPost().getId());
                 Navigation.findNavController(view).navigate(action);
+
+                removeButtonsListeners();
             }
         });
 
