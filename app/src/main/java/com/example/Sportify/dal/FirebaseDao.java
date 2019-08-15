@@ -57,7 +57,6 @@ public class FirebaseDao {
     public FirebaseDao() {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-        storage = FirebaseStorage.getInstance().getReference("Uploads/" + auth.getCurrentUser().getUid() + "/ProfilePics");
 
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(false).build();
@@ -122,6 +121,7 @@ public class FirebaseDao {
     }
 
     public void uploadFile(Uri imageUri, final Dao.UploadFileListener listener){
+        storage = FirebaseStorage.getInstance().getReference("Uploads/" + auth.getCurrentUser().getUid() + "/ProfilePics");
 
         final StorageReference fileRef = storage.child(System.currentTimeMillis() + "." + FileUtils.getFileExtension(imageUri));
         UploadTask uploadTask = fileRef.putFile(imageUri);
