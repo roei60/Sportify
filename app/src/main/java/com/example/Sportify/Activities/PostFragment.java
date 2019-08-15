@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.utils.Consts;
 import com.example.Sportify.utils.DateTimeUtils;
+import com.example.Sportify.viewModels.PostViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -43,9 +45,8 @@ public class PostFragment extends Fragment {
     private ImageView mPostImageView;
     private FloatingActionButton mAddPostImageBt;
     private Button mPostSendBt;
-
+    PostViewModel viewModel;
     private Uri mPostImageUri;
-
     public PostFragment() {
         // Required empty public constructor
     }
@@ -56,15 +57,13 @@ public class PostFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_post, container, false);
-
-
         mPostId =  CommentsFragmentArgs.fromBundle(getArguments()).getPostId();
 
         mPostEditText = view.findViewById(R.id.post_edit_text);
         mPostImageView = view.findViewById(R.id.post_image_view);
         mAddPostImageBt = view.findViewById(R.id.post_add_picture_bt);
         mPostSendBt = view.findViewById(R.id.post_send_bt);
-
+        viewModel= ViewModelProviders.of(this).get(PostViewModel.class);
         mAddPostImageBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,65 +75,61 @@ public class PostFragment extends Fragment {
             }
         });
 
-
-
         Log.d("Tag", "mPostId = " + mPostId);
 
         if (mPostId != ""){
             mPostSendBt.setText("Update Post");
-            Dao.instance.getPost(mPostId, new Dao.GetPostListener() {
-                @Override
-                public void onComplete(final Post post) {
-                    Log.d("Tag", "post.text = " + post.getText());
-                    mPostEditText.setText(post.getText());
-
-                    if (post.getPicture() != null){
-                        mPostImageUri = Uri.parse(post.getPicture());
-                        Picasso.with(getContext()).load(post.getPicture()).fit().into(mPostImageView);
-                    }
-                    else
-                        mPostImageView.setImageResource(R.drawable.user_default_image);
-
-                    mPostSendBt.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // if post not have image just update post
-                            if (mPostImageUri == null){
-                                updatePost(post,null);
-                                return;
-                            }
-                            // upload post image and then add post with the image url
-                            Dao.instance.uploadFile(mPostImageUri, new Dao.UploadFileListener() {
-                                @Override
-                                public void onComplete(Uri imageUri) {
-                                    Toast.makeText(getActivity(), "Upload post image successfully!", Toast.LENGTH_SHORT).show();
-                                    updatePost(post, imageUri);
-                                }
-                            });
-                        }
-                    });
-                }
+            viewModel.SetPostId(mPostId,this.getViewLifecycleOwner(),post -> {
+                fillPostData(post);
             });
-
-
         }
-        else{
+        else{ // new post
             mPostSendBt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Date date = new Date();
+                    System.out.println(Consts.DATE_FORMAT.format(date));
+                    Post post;
+                    if (mPostImageUri != null)
+                        post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date), mPostImageUri.toString());
+                    else
+                        post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date));
+                    post.setAuthor(Dao.instance.getCurrentUser());
+
+                    Calendar now = Calendar.getInstance();
+                    post.setLastUpdate(DateTimeUtils.getTimeStamp(now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH)));
+                    post.setAuthorId(post.getAuthor().getId());
+
                     // if post not have image just add post
                     if (mPostImageUri == null){
-                        uploadPost(null);
-                        return;
-                    }
-                    // upload post image and then add post with the image url
-                    Dao.instance.uploadFile(mPostImageUri, new Dao.UploadFileListener() {
-                        @Override
-                        public void onComplete(Uri imageUri) {
-                            Toast.makeText(getActivity(), "Upload post image successfully!", Toast.LENGTH_SHORT).show();
-                            uploadPost(imageUri);
+
+                        viewModel.uploadPost(post, null, new Dao.AddPostListener() {
+                            @Override
+                            public void onComplete(Post post) {
+                            System.out.println("CreationDate : " + post.getCreationDate());
+                            Toast.makeText(getActivity(), "Post added successfully!", Toast.LENGTH_SHORT).show();
+                            Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
                         }
-                    });
+                        });
+                    }
+                    else{
+                        viewModel.uploadFile(mPostImageUri, new Dao.UploadFileListener() {
+                            @Override
+                            public void onComplete(Uri imageUri) {
+                                Toast.makeText(getActivity(), "Upload post image successfully!", Toast.LENGTH_SHORT).show();
+                                viewModel.uploadPost(post, imageUri, new Dao.AddPostListener() {
+                                    @Override
+                                    public void onComplete(Post post) {
+                                        Log.d("Tag", "Upload post successfully!");
+                                        System.out.println("CreationDate : " + post.getCreationDate());
+                                        Toast.makeText(getActivity(), "Post added successfully!", Toast.LENGTH_SHORT).show();
+                                        Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
+                                    }
+                                });
+
+                            }
+                        });
+                    }
                 }
             });
         }
@@ -142,46 +137,66 @@ public class PostFragment extends Fragment {
         return view;
     }
 
-    private void uploadPost(Uri imageUri){
-        Date date = new Date();
-        System.out.println(Consts.DATE_FORMAT.format(date));
-        Post post;
-        if (imageUri != null)
-            post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date), imageUri.toString());
-        else
-            post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date));
-        post.setAuthor(Dao.instance.getCurrentUser());
+    private void fillPostData(Post post){
 
-        Calendar now = Calendar.getInstance();
-        post.setLastUpdate(DateTimeUtils.getTimeStamp(now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH)));
-        post.setAuthorId(post.getAuthor().getId());
-        Dao.instance.addPost(post, new Dao.AddPostListener() {
-            @Override
-            public void onComplete(Post post) {
-                System.out.println("CreationDate : " + post.getCreationDate());
-                Toast.makeText(getActivity(), "Post added successfully!", Toast.LENGTH_SHORT).show();
-                Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
+
+            Log.d("Tag", "post.text = " + post.getText());
+            mPostEditText.setText(post.getText());
+
+            if (post.getPicture() != null){
+                mPostImageUri = Uri.parse(post.getPicture());
+                Picasso.with(getContext()).load(post.getPicture()).fit().into(mPostImageView);
             }
-        });
+            else
+                mPostImageView.setImageResource(R.drawable.user_default_image);
+
+            mPostSendBt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    createPost(post);
+                    // if post not have image just update post
+                    if (mPostImageUri == null){
+                        viewModel.updatePost(post, null, new Dao.AddPostListener() {
+                            @Override
+                            public void onComplete(Post post) {
+                                System.out.println("CreationDate : " + post.getCreationDate());
+                                Toast.makeText(getActivity(), "Post updated successfully!", Toast.LENGTH_SHORT).show();
+                                Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
+                            }
+                        });
+                        return;
+                    }
+                    // upload post image and then add post with the image url
+                    viewModel.uploadFile(mPostImageUri, new Dao.UploadFileListener() {
+                        @Override
+                        public void onComplete(Uri imageUri) {
+                            Toast.makeText(getActivity(), "Upload post image successfully!", Toast.LENGTH_SHORT).show();
+                            viewModel.updatePost(post, imageUri, new Dao.AddPostListener() {
+                                @Override
+                                public void onComplete(Post post) {
+                                    System.out.println("CreationDate : " + post.getCreationDate());
+                                    Toast.makeText(getActivity(), "Post updated successfully!", Toast.LENGTH_SHORT).show();
+                                    Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
     }
 
-    private void updatePost(Post post, Uri imageUri){
+    private Post createPost(Post post){
+
         Date date = new Date();
         System.out.println(Consts.DATE_FORMAT.format(date));
         post.setCreationDate(Consts.DATE_FORMAT.format(date));
         post.setText(mPostEditText.getText().toString());
-        if (imageUri != null)
-            post.setPicture(imageUri.toString());
+        if (mPostImageUri != null)
+            post.setPicture(mPostImageUri.toString());
         else
             post.setPicture(null);
-        Dao.instance.addPost(post, new Dao.AddPostListener() {
-            @Override
-            public void onComplete(Post post) {
-                System.out.println("CreationDate : " + post.getCreationDate());
-                Toast.makeText(getActivity(), "Post updated successfully!", Toast.LENGTH_SHORT).show();
-                Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
-            }
-        });
+
+        return post;
     }
 
     @Override

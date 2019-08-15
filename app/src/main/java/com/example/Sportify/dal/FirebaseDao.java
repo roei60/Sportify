@@ -57,7 +57,6 @@ public class FirebaseDao {
     public FirebaseDao() {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-        storage = FirebaseStorage.getInstance().getReference("Uploads/" + auth.getCurrentUser().getUid() + "/ProfilePics");
 
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(false).build();
@@ -109,60 +108,6 @@ public class FirebaseDao {
 
     }
 
-    public void getPost(final String id, final Dao.GetPostListener listener) {
-        db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    QuerySnapshot result = task.getResult();
-                    List<DocumentSnapshot> documents = result.getDocuments();
-                    for (final DocumentSnapshot userDoc: documents) {
-                        final User user = userDoc.toObject(User.class);
-                        user.setId(userDoc.getId());
-                        userDoc.getReference().collection("Posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    QuerySnapshot postsSnapshots = task.getResult();
-                                    List<DocumentSnapshot> postDocuments = postsSnapshots.getDocuments();
-                                    final List<Comment> comments = new ArrayList<>();
-                                    for (final DocumentSnapshot postDoc: postDocuments) {
-                                        if (postDoc.getId().equals(id)){
-                                            postDoc.getReference().collection("Comments").get()
-                                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                        @Override
-                                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                            List<DocumentSnapshot> commentDocs = queryDocumentSnapshots.getDocuments();
-
-                                                            for (DocumentSnapshot commentDoc: commentDocs ) {
-                                                                final Comment comment = commentDoc.toObject(Comment.class);
-                                                                comment.setId(commentDoc.getId());
-                                                                comment.setAuthor(user);
-                                                                comments.add(comment);
-                                                                Log.d("Tag", "adding comment");
-                                                            }
-                                                            Post post = postDoc.toObject(Post.class);
-                                                            post.setId(postDoc.getId());
-                                                            post.setAuthor(user);
-                                                            post.setComments(comments);
-                                                            listener.onComplete(post);
-                                                        }
-                                                    });
-                                        }
-                                    }
-                                }
-                                else
-                                    listener.onComplete(null);
-                            }
-                        });
-                    }
-                }
-                else
-                    listener.onComplete(null);
-            }
-        });
-    }
-
     public void deletePost(final String userId, final String postId, final Dao.DeletePostListener listener) {
         db.collection("Users").document(userId).collection("Posts").document(postId).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -174,6 +119,7 @@ public class FirebaseDao {
     }
 
     public void uploadFile(Uri imageUri, final Dao.UploadFileListener listener){
+        storage = FirebaseStorage.getInstance().getReference("Uploads/" + auth.getCurrentUser().getUid() + "/ProfilePics");
 
         final StorageReference fileRef = storage.child(System.currentTimeMillis() + "." + FileUtils.getFileExtension(imageUri));
         UploadTask uploadTask = fileRef.putFile(imageUri);
@@ -511,46 +457,46 @@ public class FirebaseDao {
 
     public void deleteComment(final String postId, final String commentId, final Dao.DeleteCommentListener listener){
 
-        getPost(postId, new Dao.GetPostListener() {
-            @Override
-            public void onComplete(Post post) {
-                String userId = post.getAuthor().getId();
-                db.collection("Users").document(userId).collection("Posts").document(postId)
-                        .collection("Comments").document(commentId).delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                listener.onComplete(aVoid);
-                            }
-                        });
-            }
-        });
+//        getPost(postId, new Dao.GetPostListener() {
+//            @Override
+//            public void onComplete(Post post) {
+//                String userId = post.getAuthor().getId();
+//                db.collection("Users").document(userId).collection("Posts").document(postId)
+//                        .collection("Comments").document(commentId).delete()
+//                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {
+//                                listener.onComplete(aVoid);
+//                            }
+//                        });
+//            }
+//        });
     }
 
     public void getComment(final String postId, final String commentId, final Dao.GetCommentListener listener){
 
-        getPost(postId, new Dao.GetPostListener() {
-            @Override
-            public void onComplete(Post post) {
-                String userId = post.getAuthor().getId();
-                db.collection("Users").document(userId).collection("Posts").document(postId)
-                        .collection("Comments").document(commentId).get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                final Comment comment = documentSnapshot.toObject(Comment.class);
-                                comment.setId(documentSnapshot.getId());
-                                getUser(comment.getUserId(), new Dao.GetUserDetailsListener() {
-                                    @Override
-                                    public void onComplete(User user) {
-                                        comment.setAuthor(user);
-                                        listener.onComplete(comment);
-                                    }
-                                });
-                            }
-                        });
-            }
-        });
+//        getPost(postId, new Dao.GetPostListener() {
+//            @Override
+//            public void onComplete(Post post) {
+//                String userId = post.getAuthor().getId();
+//                db.collection("Users").document(userId).collection("Posts").document(postId)
+//                        .collection("Comments").document(commentId).get()
+//                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                            @Override
+//                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                                final Comment comment = documentSnapshot.toObject(Comment.class);
+//                                comment.setId(documentSnapshot.getId());
+//                                getUser(comment.getUserId(), new Dao.GetUserDetailsListener() {
+//                                    @Override
+//                                    public void onComplete(User user) {
+//                                        comment.setAuthor(user);
+//                                        listener.onComplete(comment);
+//                                    }
+//                                });
+//                            }
+//                        });
+//            }
+//        });
     }
 
     public void getAllUsers(long updateFrom,final IFirebaseListener listener) {
