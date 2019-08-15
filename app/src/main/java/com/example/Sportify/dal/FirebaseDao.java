@@ -100,8 +100,6 @@ public class FirebaseDao {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.getResult() != null && task.isSuccessful()) {
-                    post.setId(task.getResult().getId());
-                    task.getResult().set(post);
                     listener.onComplete(post);
                 }
                 else

@@ -103,9 +103,6 @@ public class PostsListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new PostsListAdapter(mPosts);
-        mRecyclerView.setAdapter(mAdapter);
-
         mProgressBar = view.findViewById(R.id.cards_list_pb);
         mProgressBar.setVisibility(View.INVISIBLE);
         setHasOptionsMenu(true);
