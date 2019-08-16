@@ -57,11 +57,9 @@ public class EditProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         editProfile_name_txt=view.findViewById(R.id.EditProfile_name_txt);
@@ -78,16 +76,12 @@ public class EditProfileFragment extends Fragment {
             if(imageUri!=null)
                 Picasso.with(this.getContext()).load(imageUri).fit().into(editProfile_image);
         });
-
-
         editProfile_choosePicBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectProfilePicture();
             }
         });
-
-
         editProfile_editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,50 +90,45 @@ public class EditProfileFragment extends Fragment {
                 mProgressDialog.show();
                 final User user=new User(currentUser);
                 user.setName(editProfile_name_txt.getText().toString());
-                if (mUserImageUri != null)
-                    Dao.instance.UploadUserProfileImage(user.getId(), mUserImageUri, new Dao.UploadFileListener() {
-                        @Override
-                        public void onComplete(Uri imageUri) {
-                            if(imageUri==null) {
-                                Toast.makeText(getActivity(), "Something went wrong, pls try again later!", Toast.LENGTH_SHORT).show();
-                                mProgressDialog.dismiss();
-                                return;
-                            }
-                                final Uri cloudImageUri=imageUri;
-                           user.setImageUri(cloudImageUri.toString());
-                            Dao.instance.UpdateUserProfile(user, new Dao.OnUpdateComleted() {
-                                @Override
-                                public void onUpdateCompleted(boolean success) {
-                                    if(success) {
-                                        Toast.makeText(getActivity(), "updated user profile successfully!", Toast.LENGTH_SHORT).show();
-                                        ((MainActivity)getActivity()).UpdateUserData();
-                                    }
-                                        else
-                                        Toast.makeText(getActivity(), "Something went wrong, pls try again later!", Toast.LENGTH_SHORT).show();
-
-                                    mProgressDialog.dismiss();
-                                }
-                            });
-                        }
-                    });
+                if (mUserImageUri != null){
+                    UpdateWithImage(user);
+                    }
                 else
-                    Dao.instance.UpdateUserProfile(user, new Dao.OnUpdateComleted() {
-                        @Override
-                        public void onUpdateCompleted(boolean success) {
-                            if(success)
-                                Toast.makeText(getActivity(),"updated user profile successfully!",Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getActivity(), "Something went wrong, pls try again later!", Toast.LENGTH_SHORT).show();
-
-                            mProgressDialog.dismiss();
-                        }
-                    });
+                   updateWithoutImage(user);
             }
         });
 
         return view;
     }
+    private void UpdateWithImage(User user) {
+        viewModel.uploadFile(user.getId(), mUserImageUri, new Dao.UploadFileListener() {
+            public void onComplete(Uri imageUri) {
+                if (imageUri == null) {
+                    Toast.makeText(getActivity(), "Something went wrong, pls try again later!", Toast.LENGTH_SHORT).show();
+                    mProgressDialog.dismiss();
+                    return;
+                }
+                final Uri cloudImageUri = imageUri;
+                user.setImageUri(cloudImageUri.toString());
+                updateWithoutImage(user);
+            }
+        });
+    }
+    private void updateWithoutImage(User user)
+    {
+        viewModel.updateUser(user, new Dao.OnUpdateComleted() {
+            @Override
+            public void onUpdateCompleted(boolean success) {
+                if (success) {
+                    Toast.makeText(getActivity(), "updated user profile successfully!", Toast.LENGTH_SHORT).show();
+                    ((MainActivity) getActivity()).UpdateUserData();
+                } else
+                    Toast.makeText(getActivity(), "Something went wrong, pls try again later!", Toast.LENGTH_SHORT).show();
 
+                mProgressDialog.dismiss();
+            }
+        });
+    }
     private void selectProfilePicture() {
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)

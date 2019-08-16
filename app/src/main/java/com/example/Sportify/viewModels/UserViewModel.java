@@ -16,25 +16,24 @@ public class UserViewModel extends ViewModel {
     public UserViewModel() {
 
     }
-
-
-
     public void SetUserId(String userId,LifecycleOwner lifecycleOwner, Observer<User> observer) {
         mUserLiveData.observe(lifecycleOwner,observer);
         Dao.instance.observeUserByIdLiveData(userId,lifecycleOwner, user -> mUserLiveData.postValue(user));
     }
 
-    public void UpdateUser(User user, Uri imageUri, Dao.OnUpdateComleted listener){
+    public void register(){
 
+    }
+    public void signIn()
+    {
+
+    }
+    public void updateUser(User user,Dao.OnUpdateComleted listener){
         Dao.instance.UpdateUserProfile(user, listener);
     }
 
-    public void updatePost(Post post, Uri imageUri,    Dao.AddPostListener listener){
-        Dao.instance.addPost(post, listener);
-    }
-
-    public void uploadFile(Uri imageUri, Dao.UploadFileListener listener){
-        Dao.instance.uploadFile(imageUri, listener);
+    public void uploadFile(String userId,Uri imageUri, Dao.UploadFileListener listener){
+        Dao.instance.UploadUserProfileImage(userId,imageUri,listener);
     }
 
 }
