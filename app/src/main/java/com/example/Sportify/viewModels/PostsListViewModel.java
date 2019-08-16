@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 
 import com.example.Sportify.dal.Dao;
+import com.example.Sportify.models.Post;
 import com.example.Sportify.models.PostAndUser;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public class PostsListViewModel extends ViewModel {
     public PostsListViewModel() {
     }
 
+    public void deltePost(PostAndUser post, Dao.DeletePostListener listener){
+        Dao.instance.deletePost(post.getPost().getId(), listener);
+    }
 
     public void observePostsList(LifecycleOwner lifecycleOwner, Observer<List<PostAndUser>> observer) {
         mPostsLiveData.removeObservers(lifecycleOwner);

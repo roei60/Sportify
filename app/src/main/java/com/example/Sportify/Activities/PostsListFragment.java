@@ -75,6 +75,7 @@ public class PostsListFragment extends Fragment {
     PostsListAdapter mAdapter;
     List<PostAndUser> mPosts = new Vector<>();
 
+    PostsListViewModel mViewModel;
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     FirebaseUser mUserDetails;
@@ -97,6 +98,9 @@ public class PostsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_posts_list, container, false);
+
+        mViewModel = ViewModelProviders.of(this).get(PostsListViewModel.class);
+
         mRecyclerView = view.findViewById(R.id.cards_list_rv);
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -111,8 +115,8 @@ public class PostsListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
        super.onViewCreated(view,savedInstanceState);
-       PostsListViewModel viewModel = ViewModelProviders.of(this).get(PostsListViewModel.class);
-       viewModel.observePostsList(getViewLifecycleOwner(), posts -> {
+
+       mViewModel.observePostsList(getViewLifecycleOwner(), posts -> {
             if (posts != null) {
                 this.mPosts.clear();
                 this.mPosts.addAll(posts);
@@ -127,9 +131,10 @@ public class PostsListFragment extends Fragment {
             }
         });
 
-        viewModel.init(getViewLifecycleOwner());
+        mViewModel.init(getViewLifecycleOwner());
 
     }
+
 
     private void removeButtonsListeners(){
         Log.d("TAG","before remove buttons listeners");
@@ -178,7 +183,7 @@ public class PostsListFragment extends Fragment {
                 Log.d("TAG","item click: " + index);
                 //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
                 final PostAndUser post = PostsListAdapter.mData.get(index);
-                Dao.instance.deletePost(post.getPost().getId(), new Dao.DeletePostListener() {
+                mViewModel.deltePost(post, new Dao.DeletePostListener() {
                     @Override
                     public void onComplete(Void avoid) {
                         Log.d("TAG","deleted post id: " + post.getPost().getId());
