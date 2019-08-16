@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,8 @@ import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.FileUtils;
+import com.example.Sportify.viewModels.PostViewModel;
+import com.example.Sportify.viewModels.UserViewModel;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,11 +46,11 @@ public class EditProfileFragment extends Fragment {
 
     ImageView editProfile_image;
     TextView editProfile_name_txt;
-    User currentUser;
     Button editProfile_editBtn;
     FloatingActionButton editProfile_choosePicBtn;
     ProgressDialog mProgressDialog;
-
+    UserViewModel viewModel;
+    User currentUser;
     private Uri mUserImageUri;
 
     public EditProfileFragment() {
@@ -58,7 +61,6 @@ public class EditProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        currentUser= Dao.instance.getCurrentUser();
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
@@ -68,11 +70,15 @@ public class EditProfileFragment extends Fragment {
         editProfile_choosePicBtn=view.findViewById(R.id.EditProfile_add_picture_btn);
         mProgressDialog= new ProgressDialog(getActivity());
 
+        viewModel= ViewModelProviders.of(this).get(UserViewModel.class);
+        viewModel.SetUserId(Dao.instance.getCurrentUserId(),this.getViewLifecycleOwner(),currUser -> {
+            this.currentUser=currUser ;
+            editProfile_name_txt.setText(currUser .getName());
+            String imageUri = currUser.getImageUri();
+            if(imageUri!=null)
+                Picasso.with(this.getContext()).load(imageUri).fit().into(editProfile_image);
+        });
 
-        editProfile_name_txt.setText(currentUser.getName());
-        String imageUri = currentUser.getImageUri();
-        if(imageUri!=null)
-            Picasso.with(this.getContext()).load(imageUri).fit().into(editProfile_image);
 
         editProfile_choosePicBtn.setOnClickListener(new View.OnClickListener() {
             @Override

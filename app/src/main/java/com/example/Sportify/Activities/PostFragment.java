@@ -94,11 +94,10 @@ public class PostFragment extends Fragment {
                         post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date), mPostImageUri.toString());
                     else
                         post = new Post(mPostEditText.getText().toString(), Consts.DATE_FORMAT.format(date));
-                    post.setAuthor(Dao.instance.getCurrentUser());
 
                     Calendar now = Calendar.getInstance();
                     post.setLastUpdate(DateTimeUtils.getTimeStamp(now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH)));
-                    post.setAuthorId(post.getAuthor().getId());
+                    post.setAuthorId(Dao.instance.getCurrentUserId());
 
                     // if post not have image just add post
                     if (mPostImageUri == null){

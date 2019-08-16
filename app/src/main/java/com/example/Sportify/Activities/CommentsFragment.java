@@ -107,8 +107,7 @@ public class CommentsFragment extends Fragment {
                 Log.d("Tag", "add comment clicked!");
                 Date date = new Date();
                 System.out.println(Consts.DATE_FORMAT.format(date));
-                User user = Dao.instance.getCurrentUser();
-                Comment comment = new Comment(mCommentText.getText().toString(), Consts.DATE_FORMAT.format(date), user.getId());
+                Comment comment = new Comment(mCommentText.getText().toString(), Consts.DATE_FORMAT.format(date), Dao.instance.getCurrentUserId());
 
                 Dao.instance.addComment(mPostId, comment, new Dao.AddCommentListener() {
                     @Override

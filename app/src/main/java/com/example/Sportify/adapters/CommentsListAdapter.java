@@ -120,7 +120,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
         public void bind(Comment comment){
             Log.d("TAG", "bind: mText = " + mText);
 
-            if (comment.getAuthor().getId().equals(Dao.instance.getCurrentUser().getId())){
+            if (comment.getAuthor().getId().equals(Dao.instance.getCurrentUserId())){
                 // visible remove and edit buttons
                 mEdit.setVisibility(View.VISIBLE);
                 mDelete.setVisibility(View.VISIBLE);

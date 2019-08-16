@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 
@@ -25,6 +26,8 @@ import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.Common;
 import com.example.Sportify.utils.FileUtils;
+import com.example.Sportify.viewModels.PostViewModel;
+import com.example.Sportify.viewModels.UserViewModel;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -83,6 +86,7 @@ public class RegisterFragment extends Fragment {
 
     FirebaseAuth mFireBashAuth;
     DatabaseReference mDatabaseRef;
+    UserViewModel viewModel;
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
@@ -143,6 +147,8 @@ public class RegisterFragment extends Fragment {
         mSwitchRegSignIntxt = view.findViewById(R.id.Register_switchRegisterSignIn);
         mAddPictureBt = view.findViewById(R.id.register_add_picture_bt);
         mUserImageView = view.findViewById(R.id.register_user_image_view);
+        viewModel= ViewModelProviders.of(this).get(UserViewModel.class);
+
         mUserImageUri = null;
 
 
@@ -235,7 +241,9 @@ public class RegisterFragment extends Fragment {
     private void HandleSuccess(View  view){
         mProgressDialog.dismiss();
         ((MainActivity)getActivity()).enableNavigation(true);
+
         Common.hideKeyboard(RegisterFragment.this);
+
         Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_postsListFragment);
     }
     private void selectProfilePicture()
@@ -247,48 +255,7 @@ public class RegisterFragment extends Fragment {
                 .start(getActivity(),this);
     }
 
-    private void uploadFile()
-    {
-        String userId = mFireBashAuth.getCurrentUser().getUid();
-        final StorageReference fileRef = FirebaseStorage.getInstance().getReference("Uploads/" + userId + "/ProfilePics")
-                .child(System.currentTimeMillis() + "." + FileUtils.getFileExtension(mUserImageUri));
-        UploadTask uploadTask = fileRef.putFile(mUserImageUri);
-        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-                return fileRef.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    Toast.makeText(getActivity(), "Upload successfully!", Toast.LENGTH_SHORT).show();
-                    saveUser(downloadUri.toString());
-                } else {
-                    Toast.makeText(getActivity(), "Something got wrong.. pls try again", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
 
-    private void saveUser(String imageUri)
-    {
-        // create user in DB
-        final FirebaseUser currentUser = mFireBashAuth.getCurrentUser();
-        User user = new User(mName, mEmail, imageUri);
-        String userId = currentUser.getUid();
-        mDatabaseRef.child(userId).setValue(user);
-        mProgressDialog.dismiss();
-        //register completed and logged in.
-        ((MainActivity)getActivity()).enableNavigation(true);
-        Common.hideKeyboard(RegisterFragment.this);
-        Toast.makeText(getActivity(), "Registeraion Successfull!", Toast.LENGTH_LONG).show();
-        Navigation.findNavController(this.getView()).navigate(R.id.action_registerFragment_to_postsListFragment);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

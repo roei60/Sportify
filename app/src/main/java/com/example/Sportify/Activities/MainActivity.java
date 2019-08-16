@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -18,6 +19,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
+import com.example.Sportify.viewModels.PostViewModel;
+import com.example.Sportify.viewModels.UserViewModel;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity  implements
     public TextView Menu_EmailText;
     public TextView Menu_NameTxt;
     public ImageView Menu_ProfilePicture;
+    UserViewModel userViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity  implements
         setContentView(R.layout.activity_main);
 
         setDrawerEnabled(false);
+        userViewModel= ViewModelProviders.of(this).get(UserViewModel .class);
     }
 
     public void enableNavigation(boolean enabled){
@@ -56,20 +62,12 @@ public class MainActivity extends AppCompatActivity  implements
     }
 
     public void UpdateUserData() {
-        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        Dao.instance.getUserDetails(currentUser.getUid(), new Dao.GetUserDetailsListener() {
-            @Override
-            public void onComplete(User user) {
-                user.setEmail(currentUser.getEmail());
-                user.setId(currentUser.getUid());
-                Dao.instance.setCurrentUser(user);
-                Menu_EmailText.setText(currentUser.getEmail());
-                Menu_NameTxt.setText(user.getName());
-                String imageUri = user.getImageUri();
-                if(imageUri!=null)
-                    Picasso.with(MainActivity.this).load(imageUri).fit().into(Menu_ProfilePicture);
-
-            }
+        userViewModel.SetUserId(Dao.instance.getCurrentUserId(), this, currUser -> {
+            Menu_EmailText.setText(currUser.getEmail());
+            Menu_NameTxt.setText(currUser.getName());
+            String imageUri = currUser.getImageUri();
+            if (imageUri != null)
+                Picasso.with(MainActivity.this).load(imageUri).fit().into(Menu_ProfilePicture);
         });
     }
 

@@ -48,10 +48,9 @@ public class PostRepository {
     public LiveData<List<Comment>> getCommentByPropertyId(String postId){
         return mCommentDao.getAllCommentByPostId(postId);
     }
-    public User getUserById(String userId)
+    public LiveData<User> getUserById(String userId)
     {
-        LiveData<User> userById = mUserDao.getUserById(userId);
-        return userById.getValue();
+        return  mUserDao.getUserById(userId);
     }
 
     public void insert(Post post) {

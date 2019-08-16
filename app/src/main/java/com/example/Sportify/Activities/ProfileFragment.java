@@ -4,6 +4,7 @@ package com.example.Sportify.Activities;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
+import com.example.Sportify.viewModels.PostViewModel;
+import com.example.Sportify.viewModels.UserViewModel;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -28,6 +31,7 @@ public class ProfileFragment extends Fragment {
     TextView nameTxt;
     ImageView userImageView;
     Button EditUserDataBtn;
+    UserViewModel viewModel;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -44,11 +48,18 @@ public class ProfileFragment extends Fragment {
         nameTxt= view.findViewById(R.id.Profile_name_txt);
         userImageView= view.findViewById(R.id.Profile_user_image_view);
         EditUserDataBtn=view.findViewById(R.id.Profile_EditUserDataBtn);
+        viewModel= ViewModelProviders.of(this).get(UserViewModel.class);
+            viewModel.SetUserId(Dao.instance.getCurrentUserId(),this.getViewLifecycleOwner(),user->{
+                FillUserDetails(user);
+            });
 
-        User currentUser = Dao.instance.getCurrentUser();
-        emailTxt.setText(currentUser.getEmail());
-        nameTxt.setText(currentUser.getName());
-        String imageUri = currentUser.getImageUri();
+        return view;
+    }
+
+    private void FillUserDetails(User user) {
+        emailTxt.setText(user.getEmail());
+        nameTxt.setText(user.getName());
+        String imageUri = user.getImageUri();
         if(imageUri!=null)
             Picasso.with(this.getContext()).load(imageUri).fit().into(userImageView);
         EditUserDataBtn.setOnClickListener(new View.OnClickListener() {
@@ -57,7 +68,6 @@ public class ProfileFragment extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.action_profileFragment_to_editProfileFragment);
             }
         });
-        return view;
     }
 
 }

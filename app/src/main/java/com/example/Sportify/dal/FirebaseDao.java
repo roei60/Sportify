@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
+import com.example.Sportify.utils.Consts;
 import com.example.Sportify.utils.DateTimeUtils;
 import com.example.Sportify.utils.FileUtils;
 import com.google.android.gms.tasks.Continuation;
@@ -36,6 +37,7 @@ import com.google.firebase.storage.UploadTask;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -180,6 +182,8 @@ public class FirebaseDao {
     private void saveUser(User user, final Dao.OnUpdateComleted listener) {
         String uid = auth.getCurrentUser().getUid();
         user.setId(uid);
+        java.util.Date date = new Date();
+        user.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
         final CollectionReference UserRef = db.collection("Users");
         UserRef.document(uid).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -233,7 +237,6 @@ public class FirebaseDao {
                     map.put("name", user.getName());
                     map.put("imageUri", user.getImageUri());
                     UserRef.document(result.getId()).set(map, SetOptions.merge());
-                    Dao.instance.setCurrentUser(user);
                     listener.onUpdateCompleted(true);
                 }
                 else

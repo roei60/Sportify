@@ -15,6 +15,7 @@ import com.example.Sportify.models.Post;
 import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
 import com.example.Sportify.room.PostRepository;
+import com.example.Sportify.room.UserDao;
 
 import java.security.PublicKey;
 import java.text.DateFormat;
@@ -25,16 +26,16 @@ import java.util.Vector;
 
 public class Dao {
     final public static Dao instance = new Dao();
-    User currentUser;
+  //  User currentUser;
     private SharedPreferences sharedPreferences;
     private static String LAST_UPDATED_KEY = "lastUpdatedTimestamp";
-    public void setCurrentUser(User user)
+    //public void setCurrentUser(User user)
+    //{
+     //   this.currentUser=user;
+    //}
+    public LiveData<User> getCurrentUser()
     {
-        this.currentUser=user;
-    }
-    public User getCurrentUser()
-    {
-        return this.currentUser;
+        return mPostRepository.getUserById(firebaseDao.auth.getCurrentUser().getUid());
     }
 
     public String getCurrentUserId()
@@ -64,7 +65,6 @@ public class Dao {
 
             Log.d("Tag", "########### posts num: " + posts.size());
             for (Post post:posts) {
-                post.setAuthorId(post.getAuthor().getId());
                 mPostRepository.insert(post);
             }
 
@@ -95,10 +95,10 @@ public class Dao {
     public void observeUsersLiveData(LifecycleOwner lifecycleOwner, Observer<List<User>> observer) {
         mPostRepository.getAllUsers().observe(lifecycleOwner, observer);
     }
-    public User getUserById(String id)
-    {
-        return  mPostRepository.getUserById(id);
+    public void observeUserByIdLiveData(String userId,LifecycleOwner lifecycleOwner, Observer<User> observer) {
+        mPostRepository.getUserById(userId).observe(lifecycleOwner, observer);
     }
+
 
     public interface GetAllPostsListener {
         void onComplete(List<Post> data);
