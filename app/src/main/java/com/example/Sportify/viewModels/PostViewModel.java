@@ -34,13 +34,13 @@ public class PostViewModel extends ViewModel {
         Dao.instance.observePostLiveData(lifecycleOwner,postId, posts -> mPostLiveData.postValue(posts));
     }
 
-    public void uploadPost(Post post, Uri imageUri, Dao.AddPostListener listener){
+    public void uploadPost(Post post, Dao.AddPostListener listener){
 
         Dao.instance.addPost(post, listener);
     }
 
-    public void updatePost(Post post, Uri imageUri,    Dao.AddPostListener listener){
-        Dao.instance.addPost(post, listener);
+    public void updatePost(Post post, Dao.UpdatePostListener listener){
+        Dao.instance.updatePost(post, listener);
     }
 
     public void uploadFile(Uri imageUri, Dao.UploadFileListener listener){

@@ -112,6 +112,14 @@ public class Dao {
         return mPostRepository.getPostById(postId);
     }
 
+    public interface UpdatePostListener{
+        void onComplete(Post post);
+    }
+
+    public void updatePost(Post post, UpdatePostListener listener){
+        firebaseDao.updatePost(post, listener);
+    }
+
     public interface AddPostListener{
         void onComplete(Post post);
     }

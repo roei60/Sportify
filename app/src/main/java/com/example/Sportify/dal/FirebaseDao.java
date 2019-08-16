@@ -107,6 +107,21 @@ public class FirebaseDao {
         });
     }
 
+    public void updatePost(final Post post, final Dao.UpdatePostListener listener){
+        postRef.document(post.getId()).set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                listener.onComplete(post);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Tag", "onFailure: updatePost " + post.getId() + " failed");
+                listener.onComplete(null);
+            }
+        });
+    }
+
     public void addPost(final Post post, final Dao.AddPostListener listener) {
         String id = postRef.document().getId();
         post.setId(id);

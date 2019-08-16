@@ -101,8 +101,7 @@ public class PostFragment extends Fragment {
 
                     // if post not have image just add post
                     if (mPostImageUri == null){
-
-                        viewModel.uploadPost(post, null, new Dao.AddPostListener() {
+                        viewModel.uploadPost(post, new Dao.AddPostListener() {
                             @Override
                             public void onComplete(Post post) {
                             System.out.println("CreationDate : " + post.getCreationDate());
@@ -116,7 +115,8 @@ public class PostFragment extends Fragment {
                             @Override
                             public void onComplete(Uri imageUri) {
                                 Toast.makeText(getActivity(), "Upload post image successfully!", Toast.LENGTH_SHORT).show();
-                                viewModel.uploadPost(post, imageUri, new Dao.AddPostListener() {
+                                post.setPicture(imageUri.toString());
+                                viewModel.uploadPost(post, new Dao.AddPostListener() {
                                     @Override
                                     public void onComplete(Post post) {
                                         Log.d("Tag", "Upload post successfully!");
@@ -155,7 +155,7 @@ public class PostFragment extends Fragment {
                     createPost(post);
                     // if post not have image just update post
                     if (mPostImageUri == null){
-                        viewModel.updatePost(post, null, new Dao.AddPostListener() {
+                        viewModel.updatePost(post, new Dao.UpdatePostListener() {
                             @Override
                             public void onComplete(Post post) {
                                 System.out.println("CreationDate : " + post.getCreationDate());
@@ -170,7 +170,8 @@ public class PostFragment extends Fragment {
                         @Override
                         public void onComplete(Uri imageUri) {
                             Toast.makeText(getActivity(), "Upload post image successfully!", Toast.LENGTH_SHORT).show();
-                            viewModel.updatePost(post, imageUri, new Dao.AddPostListener() {
+                            post.setPicture(imageUri.toString());
+                            viewModel.updatePost(post, new Dao.UpdatePostListener() {
                                 @Override
                                 public void onComplete(Post post) {
                                     System.out.println("CreationDate : " + post.getCreationDate());
