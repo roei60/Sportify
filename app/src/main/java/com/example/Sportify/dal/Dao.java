@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.Sportify.models.Comment;
+import com.example.Sportify.models.CommentAndUser;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
@@ -53,6 +54,7 @@ public class Dao {
 //        sharedPreferences = .getSharedPreferences("RepositoryPrefs", Context.MODE_PRIVATE);
         firebaseDao.getAllPosts(0, firebaseListener);
         firebaseDao.getAllUsers(0,firebaseListener);
+        firebaseDao.getAllComments(0,firebaseListener);
     }
 
     public void init(Application application) {
@@ -72,8 +74,11 @@ public class Dao {
         }
 
         @Override
-        public void updatedCommentsForPosts(int propertyId, List<Comment> commentList) {
-
+        public void updatedCommentsForPosts(List<Comment> comments) {
+            Log.d("Tag", "&&&&&&& comments num: " + comments.size());
+            for (Comment comment:comments) {
+                mPostRepository.insert(comment);
+            }
         }
 
         @Override
@@ -84,6 +89,10 @@ public class Dao {
             }
         }
     };
+
+    public void observeCommentsListLiveData(LifecycleOwner lifecycleOwner, String postId, Observer<List<CommentAndUser>> observer) {
+        mPostRepository.getAllComments(postId).observe(lifecycleOwner, observer);
+    }
 
     public void observePostsListLiveData(LifecycleOwner lifecycleOwner, Observer<List<PostAndUser>> observer) {
         mPostRepository.getAllPosts().removeObservers(lifecycleOwner);
@@ -181,13 +190,13 @@ public class Dao {
         firebaseDao.getAllUsers(listener);
     }
 
-    public interface GetAllCommentsListener{
-        void onComplete(List<Comment> comments);
-    }
-
-    public void getAllComments(String postId, GetAllCommentsListener listener){
-        firebaseDao.getAllComments(postId, listener);
-    }
+//    public interface GetAllCommentsListener{
+//        void onComplete(List<Comment> comments);
+//    }
+//
+//    public void getAllComments(String postId, GetAllCommentsListener listener){
+//        firebaseDao.getAllComments(postId, listener);
+//    }
 
     public interface AddCommentListener{
         void onComplete(Comment comment);
@@ -217,7 +226,7 @@ public class Dao {
         void onComplete(Comment comment);
     }
 
-    public void updateComment(String postId, Comment comment, UpdateCommentListener listener){
-        firebaseDao.updateComment(postId, comment, listener);
+    public void updateComment(Comment comment, UpdateCommentListener listener){
+        firebaseDao.updateComment(comment, listener);
     }
 }

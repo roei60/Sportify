@@ -77,7 +77,7 @@ public class EditCommentFragment extends Fragment {
                         Date date = new Date();
                         System.out.println(Consts.DATE_FORMAT.format(date));
                         comment.setCreationDate(Consts.DATE_FORMAT.format(date));
-                        Dao.instance.updateComment(mPostId, comment, new Dao.UpdateCommentListener() {
+                        Dao.instance.updateComment(comment, new Dao.UpdateCommentListener() {
                             @Override
                             public void onComplete(Comment comment) {
                                 Toast.makeText(getActivity(), "Comment updated successfully!", Toast.LENGTH_SHORT).show();

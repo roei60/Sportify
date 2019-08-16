@@ -16,17 +16,19 @@ import android.widget.TextView;
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Comment;
+import com.example.Sportify.models.CommentAndUser;
+import com.example.Sportify.models.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapter.CommentRowViewHolder>{
-    public static List<Comment> mData;
+    public static List<CommentAndUser> mData;
     OnItemClickListener mListener;
     OnEditClickListener mEditListener;
     OnDeleteClickListener mDeleteListener;
 
-    public CommentsListAdapter(List<Comment> data) {
+    public CommentsListAdapter(List<CommentAndUser> data) {
         mData = data;
     }
 
@@ -62,7 +64,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CommentRowViewHolder postRowViewHolder, int i) {
-        Comment comment = mData.get(i);
+        CommentAndUser comment = mData.get(i);
         postRowViewHolder.bind(comment);
     }
 
@@ -117,10 +119,13 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
         }
 
-        public void bind(Comment comment){
+        public void bind(CommentAndUser commentAndUser){
             Log.d("TAG", "bind: mText = " + mText);
 
-            if (comment.getUserId().equals(Dao.instance.getCurrentUserId())){
+            Comment comment = commentAndUser.getComment();
+            User user = commentAndUser.getUser();
+
+            if (user.getId().equals(Dao.instance.getCurrentUserId())){
                 // visible remove and edit buttons
                 mEdit.setVisibility(View.VISIBLE);
                 mDelete.setVisibility(View.VISIBLE);
@@ -132,9 +137,9 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
 
             mText.setText(comment.getText());
             mDate.setText(comment.getCreationDate());
-            mName.setText(comment.getAuthor().getName());
-            if (comment.getAuthor().getImageUri() != null)
-                Picasso.with(itemView.getContext()).load(comment.getAuthor().getImageUri()).fit().into(mUserImage);
+            mName.setText(user.getName());
+            if (user.getImageUri() != null)
+                Picasso.with(itemView.getContext()).load(user.getImageUri()).fit().into(mUserImage);
             else
                 mUserImage.setImageResource(R.drawable.user_default_image);
         }

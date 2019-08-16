@@ -10,7 +10,7 @@ public interface IFirebaseListener {
 
     void updatePosts(List<Post> posts);
 
-    void updatedCommentsForPosts(int postId, List<Comment> commentList);
+    void updatedCommentsForPosts(List<Comment> commentList);
 
     void updateUsers(List<User> users);
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.example.Sportify.models.Comment;
+import com.example.Sportify.models.CommentAndUser;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
@@ -45,7 +46,7 @@ public class PostRepository {
         return mPostDao.getPostById(postId);
     }
 
-    public LiveData<List<Comment>> getCommentByPropertyId(String postId){
+    public LiveData<List<CommentAndUser>> getAllComments(String postId){
         return mCommentDao.getAllCommentByPostId(postId);
     }
     public LiveData<User> getUserById(String userId)

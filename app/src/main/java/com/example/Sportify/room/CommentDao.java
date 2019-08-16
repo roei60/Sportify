@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.example.Sportify.models.Comment;
+import com.example.Sportify.models.CommentAndUser;
 import com.example.Sportify.models.Post;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public interface CommentDao {
     @Query("DELETE FROM comment_table")
     void deleteAll();
 
-    @Query("SELECT * from comment_table WHERE mPostId=:postId")
-    LiveData<List<Comment>> getAllCommentByPostId(String postId);
+    @Query("SELECT * from comment_table " +
+                " INNER JOIN user_table ON mUserId=user_id WHERE mPostId=:postId")
+    LiveData<List<CommentAndUser>> getAllCommentByPostId(String postId);
+
 }

@@ -26,6 +26,7 @@ public class Comment {
     private User mAuthor; // will contain data of user created comment
     private String mText; // actual comment text
     private String mCreationDate;
+    @ColumnInfo(name = "comment_lastUpdate")
     private Timestamp lastUpdate;
 
     public String getPostId() {
