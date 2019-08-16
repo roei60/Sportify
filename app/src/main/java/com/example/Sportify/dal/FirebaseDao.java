@@ -352,58 +352,23 @@ public class FirebaseDao {
         });
     }
 
-    public void addComment(final String postId, final Comment comment, final Dao.AddCommentListener listener) {
+    public void addComment(final Comment comment, final Dao.AddCommentListener listener) {
 
-        getAllUsers(new Dao.GetAllUsersListener() {
+        commentRef.add(comment).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
-            public void onComplete(final List<User> users) {
-                db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            QuerySnapshot result = task.getResult();
-                            List<DocumentSnapshot> documents = result.getDocuments();
-                            for (DocumentSnapshot userDoc: documents) {
-                                final User user= userDoc.toObject(User.class);
-                                user.setId(userDoc.getId());
-                                userDoc.getReference().collection("Posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            QuerySnapshot postsSnapshots = task.getResult();
-                                            List<DocumentSnapshot> postDocuments = postsSnapshots.getDocuments();
-                                            for (DocumentSnapshot postDoc: postDocuments) {
-                                                if (postDoc.getId().equals(postId)){
-                                                    postDoc.getReference().collection("Comments").document(comment.getId()).set(comment)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    for (User user: users) {
-                                                                        if (user.getId().equals(comment.getUserId())){
-                                                                            comment.setAuthor(user);
-                                                                            Log.d("Tag", "adding comment");
-                                                                        }
-                                                                    }
-                                                                    listener.onComplete(comment);
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        }
-                                        else
-                                            listener.onComplete(null);
-                                    }
-                                });
-                            }
-                        }
-                        else
-                            listener.onComplete(null);
-                    }
-                });
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (task.getResult() != null && task.isSuccessful()) {
+                    listener.onComplete(comment);
+                }
+                else
+                    listener.onComplete(null);
             }
         });
-
     }
+
+
+
+
 
     public void updateComment(final String postId, final Comment comment, final Dao.UpdateCommentListener listener){
         getAllUsers(new Dao.GetAllUsersListener() {

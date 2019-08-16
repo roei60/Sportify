@@ -185,8 +185,8 @@ public class Dao {
         void onComplete(Comment comment);
     }
 
-    public void addComment(String postId, Comment comment, AddCommentListener listener){
-        firebaseDao.addComment(postId, comment, listener);
+    public void addComment( Comment comment, AddCommentListener listener){
+        firebaseDao.addComment(comment, listener);
     }
 
     public interface DeleteCommentListener{

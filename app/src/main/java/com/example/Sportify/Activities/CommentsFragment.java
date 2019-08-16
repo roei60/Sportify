@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,9 @@ import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.Common;
 import com.example.Sportify.utils.Consts;
+import com.example.Sportify.utils.DateTimeUtils;
+import com.example.Sportify.viewModels.CommentViewModel;
+import com.example.Sportify.viewModels.PostViewModel;
 
 import java.text.ParseException;
 import java.util.Comparator;
@@ -44,7 +48,7 @@ public class CommentsFragment extends Fragment {
 
     ImageButton mSendBtn;
     EditText mCommentText;
-
+    CommentViewModel viewModel;
     public CommentsFragment() {
         // Required empty public constructor
     }
@@ -56,6 +60,7 @@ public class CommentsFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
+        viewModel= ViewModelProviders.of(this).get(CommentViewModel.class);
         mPostId =  CommentsFragmentArgs.fromBundle(getArguments()).getPostId();
 
         mRecyclerView = view.findViewById(R.id.comments_list_rv);
@@ -108,8 +113,11 @@ public class CommentsFragment extends Fragment {
                 Date date = new Date();
                 System.out.println(Consts.DATE_FORMAT.format(date));
                 Comment comment = new Comment(mCommentText.getText().toString(), Consts.DATE_FORMAT.format(date), Dao.instance.getCurrentUserId());
+                comment.setPostId(mPostId);
+                comment.setUserId(Dao.instance.getCurrentUserId());
+                comment.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
 
-                Dao.instance.addComment(mPostId, comment, new Dao.AddCommentListener() {
+                viewModel.addComment(comment, new Dao.AddCommentListener() {
                     @Override
                     public void onComplete(Comment comment) {
                         Common.hideKeyboard(CommentsFragment.this);
