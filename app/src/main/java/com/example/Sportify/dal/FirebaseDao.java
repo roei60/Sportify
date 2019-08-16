@@ -13,6 +13,7 @@ import com.example.Sportify.utils.DateTimeUtils;
 import com.example.Sportify.utils.FileUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -69,12 +70,22 @@ public class FirebaseDao {
         commentRef=db.collection("Comments");
     }
 
+    public void updatePostsListener(long from, IFirebaseListener listener) {
+        listenerRegistration.remove();
+        getAllPosts(DateTimeUtils.getTimestampFromLong(from), listener);
+    }
+
     public void getAllPosts(long updateFrom,final IFirebaseListener listener) {
         Timestamp timeStamp;
-        if(updateFrom==0)
+        if(updateFrom==0) {
             timeStamp = DateTimeUtils.getTimeStamp(2019, 1, 1);
-        else
+            Log.d("Tag", "getAllPosts if: timeStamp = " + timeStamp);
+        }
+        else{
             timeStamp=DateTimeUtils.getTimestampFromLong(updateFrom);
+            Log.d("Tag", "getAllPosts else: timeStamp = " + timeStamp);
+        }
+
         getAllPosts(timeStamp,listener);
     }
     private  void getAllPosts(Timestamp from, IFirebaseListener listener)
@@ -89,6 +100,7 @@ public class FirebaseDao {
                 for (DocumentChange docChange : snapshot.getDocumentChanges()) {
                     posts.add(docChange.getDocument().toObject(Post.class));
                 }
+                Log.d("Tag", "posts size in observer = " + posts.size());
                 posts= snapshot.toObjects(Post.class);
                 listener.updatePosts(posts);
             }
@@ -96,18 +108,30 @@ public class FirebaseDao {
     }
 
     public void addPost(final Post post, final Dao.AddPostListener listener) {
-
-        postRef.add(post).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        String id = postRef.document().getId();
+        post.setId(id);
+        postRef.document(id).set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                if (task.getResult() != null && task.isSuccessful()) {
-                    listener.onComplete(post);
-                }
-                else
-                    listener.onComplete(null);
+            public void onSuccess(Void aVoid) {
+                listener.onComplete(post);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Tag", "onFailure: " + e.getMessage());
+                listener.onComplete(null);
             }
         });
-
+//        postRef.add(post).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentReference> task) {
+//                if (task.getResult() != null && task.isSuccessful()) {
+//                    listener.onComplete(post);
+//                }
+//                else
+//                    listener.onComplete(null);
+//            }
+//        });
     }
 
     public void deletePost(String postId, final Dao.DeletePostListener listener) {
