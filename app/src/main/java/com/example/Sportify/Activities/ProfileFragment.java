@@ -60,7 +60,7 @@ public class ProfileFragment extends Fragment {
         emailTxt.setText(user.getEmail());
         nameTxt.setText(user.getName());
         String imageUri = user.getImageUri();
-        if(imageUri!=null)
+        if(imageUri!=null&& !imageUri.isEmpty())
             Picasso.with(this.getContext()).load(imageUri).fit().into(userImageView);
         EditUserDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override

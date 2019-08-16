@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity  implements
             Menu_EmailText.setText(currUser.getEmail());
             Menu_NameTxt.setText(currUser.getName());
             String imageUri = currUser.getImageUri();
-            if (imageUri != null)
+            if (imageUri != null && !imageUri.isEmpty())
                 Picasso.with(MainActivity.this).load(imageUri).fit().into(Menu_ProfilePicture);
         });
     }

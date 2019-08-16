@@ -154,7 +154,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             mText.setText(post.getText());
             mDate.setText(post.getCreationDate());
             mName.setText(user.getName());
-            if (user.getImageUri() != null)
+            if (user.getImageUri() != null &&!user.getImageUri().isEmpty())
                 Picasso.with(itemView.getContext()).load(user.getImageUri()).fit().into(mUserImage);
             else
                 mUserImage.setImageResource(R.drawable.user_default_image);

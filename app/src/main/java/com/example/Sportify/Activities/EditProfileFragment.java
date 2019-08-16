@@ -73,7 +73,7 @@ public class EditProfileFragment extends Fragment {
             this.currentUser=currUser ;
             editProfile_name_txt.setText(currUser .getName());
             String imageUri = currUser.getImageUri();
-            if(imageUri!=null)
+            if(imageUri!=null && !imageUri.isEmpty())
                 Picasso.with(this.getContext()).load(imageUri).fit().into(editProfile_image);
         });
         editProfile_choosePicBtn.setOnClickListener(new View.OnClickListener() {

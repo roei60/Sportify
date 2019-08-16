@@ -21,13 +21,10 @@ public class UserViewModel extends ViewModel {
         Dao.instance.observeUserByIdLiveData(userId,lifecycleOwner, user -> mUserLiveData.postValue(user));
     }
 
-    public void register(){
-
+    public void register(User user,String password,Uri imageUri,Dao.OnUpdateComleted listener){
+        Dao.instance.register(user,password,imageUri,listener);
     }
-    public void signIn()
-    {
 
-    }
     public void updateUser(User user,Dao.OnUpdateComleted listener){
         Dao.instance.UpdateUserProfile(user, listener);
     }
@@ -36,4 +33,7 @@ public class UserViewModel extends ViewModel {
         Dao.instance.UploadUserProfileImage(userId,imageUri,listener);
     }
 
+    public void singIn(String mEmail, String mPassword, Dao.OnUpdateComleted listener) {
+        Dao.instance.singIn(mEmail,mPassword,listener);
+    }
 }
