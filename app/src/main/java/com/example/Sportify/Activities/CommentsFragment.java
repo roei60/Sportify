@@ -1,9 +1,7 @@
 package com.example.Sportify.Activities;
 
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
@@ -26,10 +24,8 @@ import com.example.Sportify.models.CommentAndUser;
 import com.example.Sportify.utils.Common;
 import com.example.Sportify.utils.Consts;
 import com.example.Sportify.utils.DateTimeUtils;
-import com.example.Sportify.viewModels.CommentViewModel;
+import com.example.Sportify.viewModels.CommentsListViewModel;
 
-import java.text.ParseException;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -47,7 +43,7 @@ public class CommentsFragment extends Fragment {
 
     ImageButton mSendBtn;
     EditText mCommentText;
-    CommentViewModel viewModel;
+    CommentsListViewModel viewModel;
     public CommentsFragment() {
         // Required empty public constructor
     }
@@ -59,7 +55,7 @@ public class CommentsFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
-        viewModel= ViewModelProviders.of(this).get(CommentViewModel.class);
+        viewModel= ViewModelProviders.of(this).get(CommentsListViewModel.class);
         mPostId =  CommentsFragmentArgs.fromBundle(getArguments()).getPostId();
 
         mRecyclerView = view.findViewById(R.id.comments_list_rv);

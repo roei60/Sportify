@@ -12,7 +12,7 @@ import com.example.Sportify.models.Post;
 
 import java.util.List;
 
-public class CommentViewModel extends ViewModel {
+public class CommentsListViewModel extends ViewModel {
 
     private MutableLiveData<List<CommentAndUser>> mCommentsLiveData = new MutableLiveData<>();
     private MutableLiveData<Post> mPostLiveData = new MutableLiveData<>();
