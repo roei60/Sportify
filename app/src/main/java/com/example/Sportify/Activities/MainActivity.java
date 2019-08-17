@@ -138,7 +138,9 @@ public class MainActivity extends AppCompatActivity  implements
                 break;
 
             case R.id.second:
-                navController.navigate(PostsListFragmentDirections.actionPostsListFragmentToPostFragment(""));
+                Bundle bundle = new Bundle();
+                bundle.putString("postId", "");
+                navController.navigate(R.id.postFragment, bundle);
                 break;
 
             case R.id.third:

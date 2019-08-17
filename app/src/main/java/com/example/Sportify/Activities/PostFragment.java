@@ -65,7 +65,8 @@ public class PostFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_post, container, false);
-        mPostId =  CommentsFragmentArgs.fromBundle(getArguments()).getPostId();
+
+        mPostId =  PostFragmentArgs.fromBundle(getArguments()).getPostId();
 
         mProgressDialog = new ProgressDialog(getActivity());
         mPostEditText = view.findViewById(R.id.post_edit_text);
@@ -87,7 +88,7 @@ public class PostFragment extends Fragment {
 
         Log.d("Tag", "mPostId = " + mPostId);
 
-        if (mPostId != ""){
+        if (!mPostId.isEmpty()){
             mPostSendBt.setText("Update Post");
             viewModel.setPostId(mPostId,this.getViewLifecycleOwner(), post -> {
                 fillPostData(post);

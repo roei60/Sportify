@@ -39,7 +39,7 @@ public class PostRepository {
         return mAllUsers;
     }
 
-    public LiveData<List<Post>> getPostByUserId(String  userId){
+    public LiveData<List<PostAndUser>> getAllPostsByUserId(String userId){
         return mPostDao.getAllPostsByUserId(userId);
     }
     public LiveData<Post> getPostById(String  postId){

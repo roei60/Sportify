@@ -24,7 +24,6 @@ public class PostsListViewModel extends ViewModel {
     }
 
     public void observePostsList(LifecycleOwner lifecycleOwner, Observer<List<PostAndUser>> observer) {
-        mPostsLiveData.removeObservers(lifecycleOwner);
         mPostsLiveData.observe(lifecycleOwner, observer);
     }
 

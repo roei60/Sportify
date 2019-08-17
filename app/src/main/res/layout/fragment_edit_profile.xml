@@ -11,7 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingLeft="24dp"
         android:paddingTop="24dp"
@@ -120,5 +120,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tableEditProfile"
             tools:visibility="visible" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

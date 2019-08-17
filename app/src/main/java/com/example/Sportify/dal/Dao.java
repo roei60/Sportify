@@ -95,7 +95,6 @@ public class Dao {
     }
 
     public void observePostsListLiveData(LifecycleOwner lifecycleOwner, Observer<List<PostAndUser>> observer) {
-        mPostRepository.getAllPosts().removeObservers(lifecycleOwner);
         mPostRepository.getAllPosts().observe(lifecycleOwner, observer);
     }
     public void observePostLiveData(LifecycleOwner lifecycleOwner,String postId ,Observer<Post> observer) {
@@ -104,6 +103,10 @@ public class Dao {
 
     public void observeCommentLiveData(LifecycleOwner lifecycleOwner,String commentId ,Observer<CommentAndUser> observer) {
         mPostRepository.getCommentById(commentId).observe(lifecycleOwner, observer);
+    }
+
+    public void observeUserPostsListLiveData(LifecycleOwner lifecycleOwner, String userId, Observer<List<PostAndUser>> observer) {
+        mPostRepository.getAllPostsByUserId(userId).observe(lifecycleOwner, observer);
     }
 
     public void observeUsersLiveData(LifecycleOwner lifecycleOwner, Observer<List<User>> observer) {
