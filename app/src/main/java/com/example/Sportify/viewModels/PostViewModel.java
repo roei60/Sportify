@@ -29,7 +29,7 @@ public class PostViewModel extends ViewModel {
         mPostLiveData.observe(lifecycleOwner, observer);
     }
 
-    public void SetPostId(String postId,LifecycleOwner lifecycleOwner, Observer<Post> observer) {
+    public void setPostId(String postId, LifecycleOwner lifecycleOwner, Observer<Post> observer) {
         mPostLiveData.observe(lifecycleOwner,observer);
         Dao.instance.observePostLiveData(lifecycleOwner,postId, posts -> mPostLiveData.postValue(posts));
     }

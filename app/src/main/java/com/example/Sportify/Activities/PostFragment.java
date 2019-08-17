@@ -89,7 +89,7 @@ public class PostFragment extends Fragment {
 
         if (mPostId != ""){
             mPostSendBt.setText("Update Post");
-            viewModel.SetPostId(mPostId,this.getViewLifecycleOwner(),post -> {
+            viewModel.setPostId(mPostId,this.getViewLifecycleOwner(), post -> {
                 fillPostData(post);
             });
         }

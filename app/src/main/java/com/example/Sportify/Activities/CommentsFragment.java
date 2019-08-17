@@ -136,21 +136,17 @@ public class CommentsFragment extends Fragment {
                 System.out.println(Consts.DATE_FORMAT.format(date));
                 Comment comment = new Comment(mCommentText.getText().toString(), Consts.DATE_FORMAT.format(date), Dao.instance.getCurrentUserId());
                 comment.setPostId(mPostId);
-                comment.setUserId(Dao.instance.getCurrentUserId());;
+                comment.setUserId(Dao.instance.getCurrentUserId());
                 comment.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
 
-//                viewModel.addComment(comment, new Dao.AddCommentListener() {
-//                    @Override
-//                    public void onComplete(Comment comment) {
-//                        Common.hideKeyboard(CommentsFragment.this);
-//                        mCommentText.setText("");
-//                        Common.scrollToBottom(mRecyclerView);
-//
-//                        mComments.add(comment);
-//                        mAdapter.mData = mComments;
-//                        mAdapter.notifyDataSetChanged();
-//                    }
-//                });
+                viewModel.addComment(comment, new Dao.AddCommentListener() {
+                    @Override
+                    public void onComplete(Comment comment) {
+                        Common.hideKeyboard(CommentsFragment.this);
+                        mCommentText.setText("");
+                        Common.scrollToBottom(mRecyclerView);
+                    }
+                });
             }
         });
     }
