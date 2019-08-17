@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.Sportify.dal.Dao;
-import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
 
 public class UserViewModel extends ViewModel {
@@ -16,7 +15,7 @@ public class UserViewModel extends ViewModel {
     public UserViewModel() {
 
     }
-    public void SetUserId(String userId,LifecycleOwner lifecycleOwner, Observer<User> observer) {
+    public void setUserId(String userId, LifecycleOwner lifecycleOwner, Observer<User> observer) {
         mUserLiveData.observe(lifecycleOwner,observer);
         Dao.instance.observeUserByIdLiveData(userId,lifecycleOwner, user -> mUserLiveData.postValue(user));
     }
@@ -33,7 +32,7 @@ public class UserViewModel extends ViewModel {
         Dao.instance.UploadUserProfileImage(userId,imageUri,listener);
     }
 
-    public void singIn(String mEmail, String mPassword, Dao.OnUpdateComleted listener) {
-        Dao.instance.singIn(mEmail,mPassword,listener);
+    public void signIn(String mEmail, String mPassword, Dao.OnUpdateComleted listener) {
+        Dao.instance.signIn(mEmail,mPassword,listener);
     }
 }

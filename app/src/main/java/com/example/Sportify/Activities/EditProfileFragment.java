@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -22,17 +21,8 @@ import android.widget.Toast;
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
-import com.example.Sportify.utils.FileUtils;
-import com.example.Sportify.viewModels.PostViewModel;
 import com.example.Sportify.viewModels.UserViewModel;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -69,7 +59,7 @@ public class EditProfileFragment extends Fragment {
         mProgressDialog= new ProgressDialog(getActivity());
 
         viewModel= ViewModelProviders.of(this).get(UserViewModel.class);
-        viewModel.SetUserId(Dao.instance.getCurrentUserId(),this.getViewLifecycleOwner(),currUser -> {
+        viewModel.setUserId(Dao.instance.getCurrentUserId(),this.getViewLifecycleOwner(), currUser -> {
             this.currentUser=currUser ;
             editProfile_name_txt.setText(currUser .getName());
             String imageUri = currUser.getImageUri();

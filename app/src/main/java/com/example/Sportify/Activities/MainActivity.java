@@ -18,12 +18,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
-import com.example.Sportify.models.User;
-import com.example.Sportify.viewModels.PostViewModel;
 import com.example.Sportify.viewModels.UserViewModel;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity  implements
@@ -62,7 +58,7 @@ public class MainActivity extends AppCompatActivity  implements
     }
 
     public void UpdateUserData() {
-        userViewModel.SetUserId(Dao.instance.getCurrentUserId(), this, currUser -> {
+        userViewModel.setUserId(Dao.instance.getCurrentUserId(), this, currUser -> {
             Menu_EmailText.setText(currUser.getEmail());
             Menu_NameTxt.setText(currUser.getName());
             String imageUri = currUser.getImageUri();

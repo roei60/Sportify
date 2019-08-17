@@ -149,7 +149,7 @@ public class Dao {
     public interface  OnUpdateComleted{
         void onUpdateCompleted(boolean success);
     }
-    public void singIn(String email, String password, final Dao.OnUpdateComleted listener)
+    public void signIn(String email, String password, final Dao.OnUpdateComleted listener)
     {
         firebaseDao.signIn(email,password,listener);
     }

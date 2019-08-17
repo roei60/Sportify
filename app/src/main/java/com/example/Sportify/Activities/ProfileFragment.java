@@ -11,14 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
-import com.example.Sportify.viewModels.PostViewModel;
 import com.example.Sportify.viewModels.UserViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -49,7 +47,7 @@ public class ProfileFragment extends Fragment {
         userImageView= view.findViewById(R.id.Profile_user_image_view);
         EditUserDataBtn=view.findViewById(R.id.Profile_EditUserDataBtn);
         viewModel= ViewModelProviders.of(this).get(UserViewModel.class);
-            viewModel.SetUserId(Dao.instance.getCurrentUserId(),this.getViewLifecycleOwner(),user->{
+            viewModel.setUserId(Dao.instance.getCurrentUserId(),this.getViewLifecycleOwner(), user->{
                 FillUserDetails(user);
             });
 

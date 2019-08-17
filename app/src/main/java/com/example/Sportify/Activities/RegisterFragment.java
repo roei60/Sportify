@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,29 +24,15 @@ import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.Common;
-import com.example.Sportify.utils.FileUtils;
-import com.example.Sportify.viewModels.PostViewModel;
 import com.example.Sportify.viewModels.UserViewModel;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
@@ -210,7 +195,7 @@ public class RegisterFragment extends Fragment {
                 else {
                     mProgressDialog.setMessage("Login user...");
                     mProgressDialog.show();
-                    viewModel.singIn(mEmail, mPassword, new Dao.OnUpdateComleted() {
+                    viewModel.signIn(mEmail, mPassword, new Dao.OnUpdateComleted() {
                         @Override
                         public void onUpdateCompleted(boolean success) {
                             if (success) {
