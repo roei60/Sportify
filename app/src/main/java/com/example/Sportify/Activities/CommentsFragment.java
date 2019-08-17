@@ -1,5 +1,6 @@
 package com.example.Sportify.Activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -44,6 +45,7 @@ public class CommentsFragment extends Fragment {
     ImageButton mSendBtn;
     EditText mCommentText;
     CommentsListViewModel viewModel;
+    ProgressDialog mProgressDialog;
     public CommentsFragment() {
         // Required empty public constructor
     }
@@ -55,6 +57,7 @@ public class CommentsFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
+        mProgressDialog = new ProgressDialog(getActivity());
         viewModel= ViewModelProviders.of(this).get(CommentsListViewModel.class);
         mPostId =  CommentsFragmentArgs.fromBundle(getArguments()).getPostId();
 
@@ -96,11 +99,14 @@ public class CommentsFragment extends Fragment {
         mAdapter.setOnDeleteClickListener(new CommentsListAdapter.OnDeleteClickListener() {
             @Override
             public void onClick(int index) {
+                mProgressDialog.setTitle("Deleting comment");
+                mProgressDialog.show();
                 Log.d("TAG","item click: " + index);
                 final CommentAndUser comment = CommentsListAdapter.mData.get(index);
                 viewModel.deleteComment(comment.getComment(), new Dao.DeleteCommentListener() {
                     @Override
                     public void onComplete(Void avoid) {
+                        mProgressDialog.hide();
                         Log.d("TAG","deleted comment id: " + comment.getComment().getId());
                         mComments.remove(comment);
                         mAdapter.notifyDataSetChanged();
@@ -127,6 +133,8 @@ public class CommentsFragment extends Fragment {
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mProgressDialog.setTitle("Adding comment..");
+                mProgressDialog.show();
                 Log.d("Tag", "add comment clicked!");
                 Date date = new Date();
                 System.out.println(Consts.DATE_FORMAT.format(date));
@@ -138,6 +146,7 @@ public class CommentsFragment extends Fragment {
                 viewModel.addComment(comment, new Dao.AddCommentListener() {
                     @Override
                     public void onComplete(Comment comment) {
+                        mProgressDialog.hide();
                         Common.hideKeyboard(CommentsFragment.this);
                         mCommentText.setText("");
                         Common.scrollToBottom(mRecyclerView);
