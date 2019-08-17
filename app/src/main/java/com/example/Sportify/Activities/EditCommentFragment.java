@@ -5,6 +5,7 @@ import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -20,7 +21,10 @@ import android.widget.Toast;
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.Comment;
+import com.example.Sportify.models.CommentAndUser;
+import com.example.Sportify.models.User;
 import com.example.Sportify.utils.Consts;
+import com.example.Sportify.viewModels.CommentViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -30,6 +34,7 @@ import java.util.Date;
  */
 public class EditCommentFragment extends Fragment {
 
+    CommentViewModel mViewModel;
     String mPostId;
     String mCommentId;
 
@@ -51,6 +56,8 @@ public class EditCommentFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_comment, container, false);
 
+        mViewModel = ViewModelProviders.of(this).get(CommentViewModel.class);
+
         mPostId = EditCommentFragmentArgs.fromBundle(getArguments()).getPostId();
         mCommentId = EditCommentFragmentArgs.fromBundle(getArguments()).getCommentId();
 
@@ -61,37 +68,41 @@ public class EditCommentFragment extends Fragment {
         mUpdate = view.findViewById(R.id.edit_comment_btn);
         mEditText = view.findViewById(R.id.edit_comment_edit_text);
 
-        Dao.instance.getComment(mPostId, mCommentId, new Dao.GetCommentListener() {
-            @Override
-            public void onComplete(final Comment comment) {
-                Picasso.with(getContext()).load(comment.getAuthor().getImageUri()).fit().into(mUserImage);
-                mName.setText(comment.getAuthor().getName());
-                mDate.setText(comment.getCreationDate());
-                mText.setText(comment.getText());
-                mEditText.setText(comment.getText());
-
-                mUpdate.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        comment.setText(mEditText.getText().toString());
-                        Date date = new Date();
-                        System.out.println(Consts.DATE_FORMAT.format(date));
-                        comment.setCreationDate(Consts.DATE_FORMAT.format(date));
-                        Dao.instance.updateComment(comment, new Dao.UpdateCommentListener() {
-                            @Override
-                            public void onComplete(Comment comment) {
-                                Toast.makeText(getActivity(), "Comment updated successfully!", Toast.LENGTH_SHORT).show();
-                                EditCommentFragmentDirections.ActionEditCommentFragmentToCommentsFragment action =
-                                        EditCommentFragmentDirections.actionEditCommentFragmentToCommentsFragment(mPostId);
-                                Navigation.findNavController(getView()).navigate(action);
-                            }
-                        });
-                    }
-                });
-            }
+        mViewModel.setCommentId(mCommentId,this.getViewLifecycleOwner(), commentAndUser -> {
+            fillCommentData(commentAndUser);
+            mUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Comment comment = commentAndUser.getComment();
+                    comment.setText(mEditText.getText().toString());
+                    Date date = new Date();
+                    System.out.println(Consts.DATE_FORMAT.format(date));
+                    comment.setCreationDate(Consts.DATE_FORMAT.format(date));
+                    mViewModel.updateComment(comment, new Dao.UpdateCommentListener() {
+                        @Override
+                        public void onComplete(Comment comment) {
+                            Toast.makeText(getActivity(), "Comment updated successfully!", Toast.LENGTH_SHORT).show();
+                            EditCommentFragmentDirections.ActionEditCommentFragmentToCommentsFragment action =
+                                    EditCommentFragmentDirections.actionEditCommentFragmentToCommentsFragment(mPostId);
+                            Navigation.findNavController(getView()).navigate(action);
+                        }
+                    });
+                }
+            });
         });
 
         return view;
+    }
+
+    private void fillCommentData(CommentAndUser commentAndUser) {
+        Comment comment = commentAndUser.getComment();
+        User user = commentAndUser.getUser();
+
+        Picasso.with(getContext()).load(user.getImageUri()).fit().into(mUserImage);
+        mName.setText(user.getName());
+        mDate.setText(comment.getCreationDate());
+        mText.setText(comment.getText());
+        mEditText.setText(comment.getText());
     }
 
 }

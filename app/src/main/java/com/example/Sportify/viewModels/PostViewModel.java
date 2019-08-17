@@ -24,14 +24,9 @@ public class PostViewModel extends ViewModel {
     public PostViewModel() {
     }
 
-
-    public void observePost(LifecycleOwner lifecycleOwner, Observer<Post> observer) {
-        mPostLiveData.observe(lifecycleOwner, observer);
-    }
-
     public void setPostId(String postId, LifecycleOwner lifecycleOwner, Observer<Post> observer) {
         mPostLiveData.observe(lifecycleOwner,observer);
-        Dao.instance.observePostLiveData(lifecycleOwner,postId, posts -> mPostLiveData.postValue(posts));
+        Dao.instance.observePostLiveData(lifecycleOwner,postId, post -> mPostLiveData.postValue(post));
     }
 
     public void uploadPost(Post post, Dao.AddPostListener listener){

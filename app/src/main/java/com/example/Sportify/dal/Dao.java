@@ -101,6 +101,11 @@ public class Dao {
     public void observePostLiveData(LifecycleOwner lifecycleOwner,String postId ,Observer<Post> observer) {
         mPostRepository.getPostById(postId).observe(lifecycleOwner, observer);
     }
+
+    public void observeCommentLiveData(LifecycleOwner lifecycleOwner,String commentId ,Observer<CommentAndUser> observer) {
+        mPostRepository.getCommentById(commentId).observe(lifecycleOwner, observer);
+    }
+
     public void observeUsersLiveData(LifecycleOwner lifecycleOwner, Observer<List<User>> observer) {
         mPostRepository.getAllUsers().observe(lifecycleOwner, observer);
     }
@@ -210,8 +215,9 @@ public class Dao {
         void onComplete(Void avoid);
     }
 
-    public void deleteComment(String postId, String commentId, DeleteCommentListener listener){
-        firebaseDao.deleteComment(postId, commentId, listener);
+    public void deleteComment(String commentId, DeleteCommentListener listener){
+        firebaseDao.deleteComment(commentId, listener);
+        mPostRepository.deleteComment(commentId);
     }
 
     public interface GetCommentListener{

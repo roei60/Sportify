@@ -46,6 +46,10 @@ public class PostRepository {
         return mPostDao.getPostById(postId);
     }
 
+    public LiveData<CommentAndUser> getCommentById(String commentId){
+        return mCommentDao.getCommentById(commentId);
+    }
+
     public LiveData<List<CommentAndUser>> getAllComments(String postId){
         return mCommentDao.getAllCommentByPostId(postId);
     }
@@ -67,6 +71,10 @@ public class PostRepository {
 
     public void deletePost(String postId) {
         new deletePostAsyncTask(mPostDao).execute(postId);
+    }
+
+    public void deleteComment(String commentId){
+        new deleteCommentAsyncTask(mCommentDao).execute(commentId);
     }
 
     private static class insertAsyncTask extends AsyncTask<Comment, Void, Void> {
@@ -118,6 +126,21 @@ public class PostRepository {
         private PostDao mAsyncTaskDao;
 
         public deletePostAsyncTask(PostDao  dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final String... params) {
+            mAsyncTaskDao.delete(params[0]);
+            return null;
+        }
+    }
+
+    private static class deleteCommentAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private CommentDao mAsyncTaskDao;
+
+        public deleteCommentAsyncTask(CommentDao  dao) {
             mAsyncTaskDao = dao;
         }
 

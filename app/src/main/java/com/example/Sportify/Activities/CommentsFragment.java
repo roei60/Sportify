@@ -98,7 +98,7 @@ public class CommentsFragment extends Fragment {
             public void onClick(int index) {
                 Log.d("TAG","item click: " + index);
                 final CommentAndUser comment = CommentsListAdapter.mData.get(index);
-                Dao.instance.deleteComment(mPostId, comment.getComment().getId(), new Dao.DeleteCommentListener() {
+                viewModel.deleteComment(comment.getComment(), new Dao.DeleteCommentListener() {
                     @Override
                     public void onComplete(Void avoid) {
                         Log.d("TAG","deleted comment id: " + comment.getComment().getId());

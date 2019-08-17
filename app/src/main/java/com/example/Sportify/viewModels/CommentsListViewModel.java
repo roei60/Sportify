@@ -21,6 +21,10 @@ public class CommentsListViewModel extends ViewModel {
         Dao.instance.addComment(comment,listener);
     }
 
+    public void deleteComment(Comment comment, Dao.DeleteCommentListener listener){
+        Dao.instance.deleteComment(comment.getId(), listener);
+    }
+
     public void observeCommentsList(LifecycleOwner lifecycleOwner, Observer<List<CommentAndUser>> observer) {
         mCommentsLiveData.observe(lifecycleOwner, observer);
     }

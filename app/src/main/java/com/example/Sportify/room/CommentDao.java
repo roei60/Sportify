@@ -25,4 +25,10 @@ public interface CommentDao {
                 " INNER JOIN user_table ON mUserId=user_id WHERE mPostId=:postId")
     LiveData<List<CommentAndUser>> getAllCommentByPostId(String postId);
 
+    @Query("DELETE FROM comment_table WHERE comment_id=:commentId")
+    void delete(String commentId);
+
+    @Query("SELECT * from comment_table" +
+            " INNER JOIN user_table ON mUserId=user_id WHERE comment_id=:commentId")
+    LiveData<CommentAndUser> getCommentById(String commentId);
 }

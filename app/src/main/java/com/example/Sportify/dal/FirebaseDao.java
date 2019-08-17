@@ -392,22 +392,13 @@ public class FirebaseDao {
     }
 
 
-    public void deleteComment(final String postId, final String commentId, final Dao.DeleteCommentListener listener){
-
-//        getPost(postId, new Dao.GetPostListener() {
-//            @Override
-//            public void onComplete(Post post) {
-//                String userId = post.getAuthor().getId();
-//                db.collection("Users").document(userId).collection("Posts").document(postId)
-//                        .collection("Comments").document(commentId).delete()
-//                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void aVoid) {
-//                                listener.onComplete(aVoid);
-//                            }
-//                        });
-//            }
-//        });
+    public void deleteComment(final String commentId, final Dao.DeleteCommentListener listener){
+        commentRef.document(commentId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                listener.onComplete(aVoid);
+            }
+        });
     }
 
     public void getComment(final String postId, final String commentId, final Dao.GetCommentListener listener){
