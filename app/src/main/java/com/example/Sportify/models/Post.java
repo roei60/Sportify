@@ -22,10 +22,7 @@ import static com.google.gson.internal.$Gson$Types.arrayOf;
 
 @SuppressWarnings({"unused", "NullableProblems"})
 
-@Entity(tableName = "post_table",foreignKeys = @ForeignKey(entity = User.class,
-        parentColumns = "user_id",
-        childColumns = "mAuthorId",
-        onDelete = ForeignKey.CASCADE))
+@Entity(tableName = "post_table")
 
 //@Entity(tableName = "post_table")
 @TypeConverters({TimestampConverters.class, ListConverters.class})

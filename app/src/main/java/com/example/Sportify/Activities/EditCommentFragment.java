@@ -115,7 +115,12 @@ public class EditCommentFragment extends Fragment {
         Comment comment = commentAndUser.getComment();
         User user = commentAndUser.getUser();
 
-        Picasso.with(getContext()).load(user.getImageUri()).fit().into(mUserImage);
+        if (user.getImageUri() != null && !user.getImageUri().isEmpty()){
+            Picasso.with(getContext()).load(user.getImageUri()).fit().into(mUserImage);
+        }
+        else
+            mUserImage.setImageResource(R.drawable.user_default_image);
+
         mName.setText(user.getName());
         mDate.setText(comment.getCreationDate());
         mText.setText(comment.getText());

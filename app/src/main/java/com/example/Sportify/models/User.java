@@ -31,6 +31,8 @@ public class User {
     @Ignore
     private List<Post> mUserPosts;
 
+    //private Boolean mIsDeleted;
+
     public User(){
         mUserPosts=new Vector<Post>();
     }
@@ -42,6 +44,7 @@ public class User {
         mImageUri=user.mImageUri;
         lastUpdate=user.lastUpdate;
         mUserPosts=new Vector<Post>(user.mUserPosts);
+        //mIsDeleted = user.mIsDeleted;
     }
 
     public User(String name, String email, String imageUri){
@@ -49,6 +52,14 @@ public class User {
         mEmail = email;
         mImageUri = imageUri;
     }
+
+//    public Boolean getIsDeleted() {
+//        return mIsDeleted;
+//    }
+//
+//    public void setIsDeleted(Boolean mIsDeleted) {
+//        this.mIsDeleted = mIsDeleted;
+//    }
 
     public  List<Post> getPosts(){return mUserPosts;}
 

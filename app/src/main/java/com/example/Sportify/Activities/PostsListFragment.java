@@ -117,16 +117,14 @@ public class PostsListFragment extends Fragment {
        super.onViewCreated(view,savedInstanceState);
 
        mViewModel.observePostsList(getViewLifecycleOwner(), posts -> {
+           Log.d("Tag", "posts size in fragment = " + posts.size());
             if (posts != null) {
                 this.mPosts.clear();
                 this.mPosts.addAll(posts);
-                if (mAdapter == null) {
-                    mAdapter = new PostsListAdapter( this.mPosts);
-                    mRecyclerView.setAdapter(mAdapter);
-                } else {
-                    mRecyclerView.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-                }
+                mAdapter = new PostsListAdapter( this.mPosts);
+                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+
                 addButtonsClickListeners(view);
             }
         });

@@ -12,7 +12,7 @@ import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
 
-@Database(entities = {Post.class, Comment.class, User.class}, version = 5)
+@Database(entities = {Post.class, Comment.class, User.class}, version = 7)
 public abstract class PostRoomDatabase extends RoomDatabase {
     public abstract PostDao postDao();
     public abstract CommentDao commentsDao();

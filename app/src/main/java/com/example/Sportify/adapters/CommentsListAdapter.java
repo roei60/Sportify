@@ -138,7 +138,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             mText.setText(comment.getText());
             mDate.setText(comment.getCreationDate());
             mName.setText(user.getName());
-            if (user.getImageUri() != null)
+            if (user.getImageUri() != null && !user.getImageUri().isEmpty())
                 Picasso.with(itemView.getContext()).load(user.getImageUri()).fit().into(mUserImage);
             else
                 mUserImage.setImageResource(R.drawable.user_default_image);
