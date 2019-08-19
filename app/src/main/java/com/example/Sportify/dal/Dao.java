@@ -16,6 +16,7 @@ import com.example.Sportify.models.Post;
 import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
 import com.example.Sportify.room.PostRepository;
+import com.example.Sportify.room.TimestampConverters;
 import com.example.Sportify.room.UserDao;
 
 import java.security.PublicKey;
@@ -27,14 +28,11 @@ import java.util.Vector;
 
 public class Dao {
     final public static Dao instance = new Dao();
-  //  User currentUser;
     private SharedPreferences sharedPreferences;
     private static String LAST_UPDATED_KEY = "lastUpdatedTimestamp";
-    private static String IS_LOGGED_IN = "isLogin";
-    //public void setCurrentUser(User user)
-    //{
-     //   this.currentUser=user;
-    //}
+    FirebaseDao firebaseDao;
+    private PostRepository mPostRepository;
+
     public LiveData<User> getCurrentUser()
     {
         return mPostRepository.getUserById(firebaseDao.auth.getCurrentUser().getUid());
@@ -44,52 +42,73 @@ public class Dao {
     {
         return firebaseDao.auth.getCurrentUser().getUid();
     }
-    //ModelSql modelSql;
-    FirebaseDao firebaseDao;
 
-    private PostRepository mPostRepository;
 
     private Dao() {
-        //modelSql = new ModelSql();
-        firebaseDao = new FirebaseDao();
-//        sharedPreferences = .getSharedPreferences("RepositoryPrefs", Context.MODE_PRIVATE);
-        firebaseDao.getAllPosts(0, firebaseListener);
-        firebaseDao.getAllUsers(0,firebaseListener);
-        firebaseDao.getAllComments(0,firebaseListener);
+
     }
 
     public void init(Application application) {
         mPostRepository = new PostRepository(application);
-        sharedPreferences = application.getSharedPreferences("RepositoryPrefs", Context.MODE_PRIVATE);
+        sharedPreferences = application.getSharedPreferences("SportifyPrefs", Context.MODE_PRIVATE);
+        firebaseDao = new FirebaseDao();
+        long lastUpdatedTimestamp = getLastUpdatedTimestamp();
+        firebaseDao.getAllPosts(lastUpdatedTimestamp, firebaseListener);
+        firebaseDao.getAllUsers(lastUpdatedTimestamp,firebaseListener);
+        firebaseDao.getAllComments(lastUpdatedTimestamp,firebaseListener);
     }
+
     IFirebaseListener firebaseListener=new IFirebaseListener() {
         @Override
         public void updatePosts(List<Post> posts) {
-
+            long lastUpdatedTimestamp = getLastUpdatedTimestamp();
             Log.d("Tag", "########### posts num: " + posts.size());
             for (Post post:posts) {
+                lastUpdatedTimestamp=Math.max(TimestampConverters.dateToTimestamp(post.getLastUpdate()),lastUpdatedTimestamp);
                 mPostRepository.insert(post);
             }
+            setLastUpdatedTimestamp(lastUpdatedTimestamp);
+            firebaseDao.getAllPosts(lastUpdatedTimestamp, firebaseListener);
 
-            Log.d("bblls","fff");
+            Log.d("bblls", "fff");
         }
 
         @Override
         public void updatedCommentsForPosts(List<Comment> comments) {
+            long lastUpdatedTimestamp = getLastUpdatedTimestamp();
+
             Log.d("Tag", "&&&&&&& comments num: " + comments.size());
             for (Comment comment:comments) {
+                lastUpdatedTimestamp=Math.max(TimestampConverters.dateToTimestamp(comment.getLastUpdate()),lastUpdatedTimestamp);
                 mPostRepository.insert(comment);
             }
+            setLastUpdatedTimestamp(lastUpdatedTimestamp);
+            firebaseDao.getAllComments(lastUpdatedTimestamp, firebaseListener);
         }
 
         @Override
         public void updateUsers(List<User> users) {
+            long lastUpdatedTimestamp = getLastUpdatedTimestamp();
+
             Log.d("Tag", "$$$$$$$$ users num: " + users.size());
             for (User user:users) {
+                lastUpdatedTimestamp=Math.max(TimestampConverters.dateToTimestamp(user.getLastUpdate()),lastUpdatedTimestamp);
+
                 mPostRepository.insert(user);
             }
+            setLastUpdatedTimestamp(lastUpdatedTimestamp);
+            firebaseDao.getAllUsers(lastUpdatedTimestamp, firebaseListener);
+
         }
     };
+    private long getLastUpdatedTimestamp() {
+        return sharedPreferences.getLong(LAST_UPDATED_KEY, 0);
+    }
+
+    private void setLastUpdatedTimestamp(long lastUpdated) {
+        sharedPreferences.edit().putLong(LAST_UPDATED_KEY, lastUpdated).apply();
+    }
+
 
     public void observeCommentsListLiveData(LifecycleOwner lifecycleOwner, String postId, Observer<List<CommentAndUser>> observer) {
         mPostRepository.getAllComments(postId).observe(lifecycleOwner, observer);
@@ -162,11 +181,6 @@ public class Dao {
     {
         firebaseDao.signIn(email,password,listener);
     }
-
-    public void setLoggedIn(boolean isLoggedIn){
-        sharedPreferences.edit().putBoolean(IS_LOGGED_IN, isLoggedIn).apply();
-    }
-
     public void register(final User user, String password, final Uri userImageUri, final Dao.OnUpdateComleted listener)
     {
         firebaseDao.registerUser(user,password,userImageUri,listener);

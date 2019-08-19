@@ -241,7 +241,7 @@ public class PostFragment extends Fragment {
             post.setPicture(mPostImageUri.toString());
         else
             post.setPicture(null);
-
+        post.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
         return post;
     }
 

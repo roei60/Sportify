@@ -33,10 +33,10 @@ public class PostRepository {
     }
 
     public LiveData<List<PostAndUser>> getAllPosts() {
-        return mAllPosts;
+        return mPostDao.getAllPosts();
     }
     public LiveData<List<User>> getAllUsers() {
-        return mAllUsers;
+        return mUserDao.getAllUsers();
     }
 
     public LiveData<List<PostAndUser>> getAllPostsByUserId(String userId){
