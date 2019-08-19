@@ -97,7 +97,7 @@ public class EditCommentFragment extends Fragment {
                     mViewModel.updateComment(comment, new Dao.UpdateCommentListener() {
                         @Override
                         public void onComplete(Comment comment) {
-                            mProgressDialog.hide();
+                            mProgressDialog.dismiss();
                             Common.hideKeyboard(EditCommentFragment.this);
                             Toast.makeText(getActivity(), "Comment updated successfully!", Toast.LENGTH_SHORT).show();
                             EditCommentFragmentDirections.ActionEditCommentFragmentToCommentsFragment action =

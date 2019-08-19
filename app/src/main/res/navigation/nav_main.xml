@@ -83,9 +83,6 @@
         android:name="com.example.Sportify.Activities.CommentsFragment"
         android:label="fragment_comments"
         tools:layout="@layout/fragment_comments" >
-        <action
-            android:id="@+id/action_commentsFragment_to_postsListFragment"
-            app:destination="@id/postsListFragment" />
         <argument
             android:name="postId"
             app:argType="string" />
@@ -100,7 +97,9 @@
         tools:layout="@layout/fragment_post" >
         <action
             android:id="@+id/action_postFragment_to_postsListFragment"
-            app:destination="@id/postsListFragment" />
+            app:destination="@id/postsListFragment"
+            app:popUpTo="@+id/postFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="postId"
             app:argType="string"

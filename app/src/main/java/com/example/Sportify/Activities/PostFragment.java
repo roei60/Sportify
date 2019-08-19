@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
@@ -134,7 +136,7 @@ public class PostFragment extends Fragment {
             @Override
             public void onComplete(Post post) {
                 System.out.println("CreationDate : " + post.getCreationDate());
-                mProgressDialog.hide();
+                mProgressDialog.dismiss();
                 Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
                 Toast.makeText(getActivity(), "Post added successfully!", Toast.LENGTH_SHORT).show();
             }
@@ -206,8 +208,8 @@ public class PostFragment extends Fragment {
             @Override
             public void onComplete(Post post) {
                 System.out.println("CreationDate : " + post.getCreationDate());
-                mProgressDialog.hide();
-                Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
+                mProgressDialog.dismiss();
+                ((AppCompatActivity)getContext()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 Toast.makeText(getActivity(), "Post updated successfully!", Toast.LENGTH_SHORT).show();
             }
         });

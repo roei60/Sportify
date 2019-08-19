@@ -7,8 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,6 +123,7 @@ public class EditProfileFragment extends Fragment {
                     Toast.makeText(getActivity(), "Something went wrong, pls try again later!", Toast.LENGTH_SHORT).show();
 
                 mProgressDialog.dismiss();
+                ((AppCompatActivity)getContext()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
         });
     }

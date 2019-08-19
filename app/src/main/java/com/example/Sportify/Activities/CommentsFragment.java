@@ -106,7 +106,7 @@ public class CommentsFragment extends Fragment {
                 viewModel.deleteComment(comment.getComment(), new Dao.DeleteCommentListener() {
                     @Override
                     public void onComplete(Void avoid) {
-                        mProgressDialog.hide();
+                        mProgressDialog.dismiss();
                         Log.d("TAG","deleted comment id: " + comment.getComment().getId());
                         mComments.remove(comment);
                         mAdapter.notifyDataSetChanged();
@@ -146,7 +146,7 @@ public class CommentsFragment extends Fragment {
                 viewModel.addComment(comment, new Dao.AddCommentListener() {
                     @Override
                     public void onComplete(Comment comment) {
-                        mProgressDialog.hide();
+                        mProgressDialog.dismiss();
                         Common.hideKeyboard(CommentsFragment.this);
                         mCommentText.setText("");
                         Common.scrollToBottom(mRecyclerView);
