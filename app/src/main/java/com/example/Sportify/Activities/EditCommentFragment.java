@@ -28,6 +28,7 @@ import com.example.Sportify.models.CommentAndUser;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.Common;
 import com.example.Sportify.utils.Consts;
+import com.example.Sportify.utils.DateTimeUtils;
 import com.example.Sportify.viewModels.CommentViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -92,6 +93,7 @@ public class EditCommentFragment extends Fragment {
                     Date date = new Date();
                     System.out.println(Consts.DATE_FORMAT.format(date));
                     comment.setCreationDate(Consts.DATE_FORMAT.format(date));
+                    comment.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
                     mViewModel.updateComment(comment, new Dao.UpdateCommentListener() {
                         @Override
                         public void onComplete(Comment comment) {
