@@ -30,6 +30,7 @@ public class Dao {
   //  User currentUser;
     private SharedPreferences sharedPreferences;
     private static String LAST_UPDATED_KEY = "lastUpdatedTimestamp";
+    private static String IS_LOGGED_IN = "isLogin";
     //public void setCurrentUser(User user)
     //{
      //   this.currentUser=user;
@@ -161,6 +162,11 @@ public class Dao {
     {
         firebaseDao.signIn(email,password,listener);
     }
+
+    public void setLoggedIn(boolean isLoggedIn){
+        sharedPreferences.edit().putBoolean(IS_LOGGED_IN, isLoggedIn).apply();
+    }
+
     public void register(final User user, String password, final Uri userImageUri, final Dao.OnUpdateComleted listener)
     {
         firebaseDao.registerUser(user,password,userImageUri,listener);
