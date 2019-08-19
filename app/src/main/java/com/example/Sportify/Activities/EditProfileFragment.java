@@ -21,11 +21,14 @@ import android.widget.Toast;
 import com.example.Sportify.R;
 import com.example.Sportify.dal.Dao;
 import com.example.Sportify.models.User;
+import com.example.Sportify.utils.DateTimeUtils;
 import com.example.Sportify.viewModels.UserViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -75,11 +78,12 @@ public class EditProfileFragment extends Fragment {
         editProfile_editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Date date = new Date();
                 mProgressDialog.setMessage("updating user profile...");
                 mProgressDialog.show();
                 final User user=new User(currentUser);
                 user.setName(editProfile_name_txt.getText().toString());
+                user.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
                 if (mUserImageUri != null){
                     UpdateWithImage(user);
                     }

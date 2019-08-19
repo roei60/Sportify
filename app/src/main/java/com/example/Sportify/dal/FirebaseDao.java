@@ -55,7 +55,9 @@ public class FirebaseDao {
     CollectionReference userRef;
     CollectionReference postRef;
     CollectionReference commentRef;
-    private ListenerRegistration listenerRegistration;
+    private ListenerRegistration listenerRegistrationPost;
+    private ListenerRegistration listenerRegistrationComment;
+    private ListenerRegistration listenerRegistrationUsers;
 
     public FirebaseDao() {
         db = FirebaseFirestore.getInstance();
@@ -70,12 +72,11 @@ public class FirebaseDao {
         commentRef=db.collection("Comments");
     }
 
-    public void updateCommentsListener(long from, IFirebaseListener listener) {
-        listenerRegistration.remove();
-        getAllComments(DateTimeUtils.getTimestampFromLong(from), listener);
-    }
+
 
     public void getAllComments(long updateFrom,final IFirebaseListener listener) {
+        if(listenerRegistrationComment!=null)
+            listenerRegistrationComment.remove();
         Timestamp timeStamp;
         if(updateFrom==0) {
             timeStamp = DateTimeUtils.getTimeStamp(2019, 1, 1);
@@ -90,7 +91,7 @@ public class FirebaseDao {
     }
     private void getAllComments(Timestamp from, IFirebaseListener listener)
     {
-        listenerRegistration = commentRef.whereGreaterThan("lastUpdate", from).addSnapshotListener((snapshot, e) -> {
+        listenerRegistrationComment = commentRef.whereGreaterThan("lastUpdate", from).addSnapshotListener((snapshot, e) -> {
             if (e != null) {
                 return;
             }
@@ -107,12 +108,10 @@ public class FirebaseDao {
         });
     }
 
-    public void updatePostsListener(long from, IFirebaseListener listener) {
-        listenerRegistration.remove();
-        getAllPosts(DateTimeUtils.getTimestampFromLong(from), listener);
-    }
 
     public void getAllPosts(long updateFrom,final IFirebaseListener listener) {
+        if(listenerRegistrationPost!=null)
+            listenerRegistrationPost.remove();
         Timestamp timeStamp;
         if(updateFrom==0) {
             timeStamp = DateTimeUtils.getTimeStamp(2019, 1, 1);
@@ -127,7 +126,7 @@ public class FirebaseDao {
     }
     private  void getAllPosts(Timestamp from, IFirebaseListener listener)
     {
-        listenerRegistration = postRef.whereGreaterThan("lastUpdate", from).addSnapshotListener((snapshot, e) -> {
+        listenerRegistrationPost = postRef.whereGreaterThan("lastUpdate", from).addSnapshotListener((snapshot, e) -> {
             if (e != null) {
                 return;
             }
@@ -140,6 +139,34 @@ public class FirebaseDao {
                 Log.d("Tag", "posts size in observer = " + posts.size());
                 posts= snapshot.toObjects(Post.class);
                 listener.updatePosts(posts);
+            }
+        });
+    }
+
+    public void getAllUsers(long updateFrom,final IFirebaseListener listener) {
+        if(listenerRegistrationUsers!=null)
+            listenerRegistrationUsers.remove();
+        Timestamp timeStamp;
+        if(updateFrom==0)
+            timeStamp = DateTimeUtils.getTimeStamp(2019, 1, 1);
+        else
+            timeStamp=DateTimeUtils.getTimestampFromLong(updateFrom);
+        getAllUsers(timeStamp,listener);
+    }
+    private  void getAllUsers(Timestamp from, IFirebaseListener listener)
+    {
+        listenerRegistrationUsers = userRef.whereGreaterThan("lastUpdate", from).addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                return;
+            }
+            if (snapshot != null && !snapshot.isEmpty()) {
+                List<User> users= new ArrayList<>();
+                snapshot.getDocumentChanges().get(0).getDocument().toObject(User.class);
+                for (DocumentChange docChange : snapshot.getDocumentChanges()) {
+                    users.add(docChange.getDocument().toObject(User.class));
+                }
+                users= snapshot.toObjects(User.class);
+                listener.updateUsers(users);
             }
         });
     }
@@ -294,19 +321,18 @@ public class FirebaseDao {
 
     public void UpdateUserProfile(final User user, final Dao.OnUpdateComleted listener) {
         final CollectionReference UserRef = db.collection("Users");
-        UserRef.document(user.getId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        userRef.document(user.getId()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot result = task.getResult();
-                    Map<Object, String> map = new HashMap<>();
-                    map.put("name", user.getName());
-                    map.put("imageUri", user.getImageUri());
-                    UserRef.document(result.getId()).set(map, SetOptions.merge());
-                    listener.onUpdateCompleted(true);
-                }
-                else
-                    listener.onUpdateCompleted(false);
+            public void onSuccess(Void aVoid) {
+                listener.onUpdateCompleted(true);
+            }
+
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onUpdateCompleted(false);
+
             }
         });
     }
@@ -427,29 +453,5 @@ public class FirebaseDao {
 //        });
     }
 
-    public void getAllUsers(long updateFrom,final IFirebaseListener listener) {
-        Timestamp timeStamp;
-        if(updateFrom==0)
-            timeStamp = DateTimeUtils.getTimeStamp(2019, 1, 1);
-        else
-            timeStamp=DateTimeUtils.getTimestampFromLong(updateFrom);
-        getAllUsers(timeStamp,listener);
-    }
-    private  void getAllUsers(Timestamp from, IFirebaseListener listener)
-    {
-        listenerRegistration = userRef.whereGreaterThan("lastUpdate", from).addSnapshotListener((snapshot, e) -> {
-            if (e != null) {
-                return;
-            }
-            if (snapshot != null && !snapshot.isEmpty()) {
-                List<User> users= new ArrayList<>();
-                snapshot.getDocumentChanges().get(0).getDocument().toObject(User.class);
-                for (DocumentChange docChange : snapshot.getDocumentChanges()) {
-                    users.add(docChange.getDocument().toObject(User.class));
-                }
-                users= snapshot.toObjects(User.class);
-                listener.updateUsers(users);
-            }
-        });
-    }
+
 }
