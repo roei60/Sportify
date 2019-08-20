@@ -1,11 +1,9 @@
 package com.example.Sportify.Activities;
 
 
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -15,62 +13,28 @@ import android.view.ViewGroup;
 import com.example.Sportify.Adapters.PostsListAdapter;
 import com.example.Sportify.R;
 
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-
-import com.example.Sportify.dal.Dao;
-import com.example.Sportify.models.Post;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.PostAndUser;
-import com.example.Sportify.models.User;
-import com.example.Sportify.utils.Consts;
 import com.example.Sportify.utils.DateTimeUtils;
 import com.example.Sportify.viewModels.PostsListViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.example.Sportify.Adapters.PostsListAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Vector;
-
-import static android.app.Activity.RESULT_OK;
 
 public class PostsListFragment extends Fragment {
     PostsListAdapter mAdapter;
@@ -184,7 +148,7 @@ public class PostsListFragment extends Fragment {
                 final PostAndUser post = PostsListAdapter.mData.get(index);
                 post.getPost().setIsDeleted(true);
                 post.getPost().setLastUpdate(DateTimeUtils.getTimestampFromLong(new Date().getTime()));
-                mViewModel.deltePost(post, new Dao.DeletePostListener() {
+                mViewModel.deltePost(post, new Model.DeletePostListener() {
                     @Override
                     public void onComplete(Void avoid) {
                         Log.d("TAG","deleted post id: " + post.getPost().getId());

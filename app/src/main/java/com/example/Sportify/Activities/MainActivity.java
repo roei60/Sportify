@@ -17,7 +17,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.Sportify.R;
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.viewModels.UserViewModel;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity  implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Dao.instance.init(this.getApplication());
+        Model.instance.init(this.getApplication());
         setContentView(R.layout.activity_main);
 
         setDrawerEnabled(false);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity  implements
     }
 
     public void UpdateUserData() {
-        userViewModel.setUserId(Dao.instance.getCurrentUserId(), this, currUser -> {
+        userViewModel.setUserId(Model.instance.getCurrentUserId(), this, currUser -> {
             Menu_EmailText.setText(currUser.getEmail());
             Menu_NameTxt.setText(currUser.getName());
             String imageUri = currUser.getImageUri();

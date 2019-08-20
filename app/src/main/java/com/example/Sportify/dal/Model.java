@@ -17,45 +17,39 @@ import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
 import com.example.Sportify.room.PostRepository;
 import com.example.Sportify.room.TimestampConverters;
-import com.example.Sportify.room.UserDao;
 
-import java.security.PublicKey;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
-public class Dao {
-    final public static Dao instance = new Dao();
+public class Model {
+    final public static Model instance = new Model();
     private SharedPreferences sharedPreferences;
     private static String LAST_UPDATED_KEY = "lastUpdatedTimestamp";
-    FirebaseDao firebaseDao;
+    FirebaseModel firebaseModel;
     private PostRepository mPostRepository;
 
     public LiveData<User> getCurrentUser()
     {
-        return mPostRepository.getUserById(firebaseDao.auth.getCurrentUser().getUid());
+        return mPostRepository.getUserById(firebaseModel.auth.getCurrentUser().getUid());
     }
 
     public String getCurrentUserId()
     {
-        return firebaseDao.auth.getCurrentUser().getUid();
+        return firebaseModel.auth.getCurrentUser().getUid();
     }
 
 
-    private Dao() {
+    private Model() {
 
     }
 
     public void init(Application application) {
         mPostRepository = new PostRepository(application);
         sharedPreferences = application.getSharedPreferences("SportifyPrefs", Context.MODE_PRIVATE);
-        firebaseDao = new FirebaseDao();
+        firebaseModel = new FirebaseModel();
         long lastUpdatedTimestamp = getLastUpdatedTimestamp();
-        firebaseDao.getAllPosts(lastUpdatedTimestamp, firebaseListener);
-        firebaseDao.getAllUsers(lastUpdatedTimestamp,firebaseListener);
-        firebaseDao.getAllComments(lastUpdatedTimestamp,firebaseListener);
+        firebaseModel.getAllPosts(lastUpdatedTimestamp, firebaseListener);
+        firebaseModel.getAllUsers(lastUpdatedTimestamp,firebaseListener);
+        firebaseModel.getAllComments(lastUpdatedTimestamp,firebaseListener);
     }
 
     IFirebaseListener firebaseListener=new IFirebaseListener() {
@@ -68,7 +62,7 @@ public class Dao {
                 mPostRepository.insert(post);
             }
             setLastUpdatedTimestamp(lastUpdatedTimestamp);
-            firebaseDao.getAllPosts(lastUpdatedTimestamp, firebaseListener);
+            firebaseModel.getAllPosts(lastUpdatedTimestamp, firebaseListener);
 
             Log.d("bblls", "fff");
         }
@@ -83,7 +77,7 @@ public class Dao {
                 mPostRepository.insert(comment);
             }
             setLastUpdatedTimestamp(lastUpdatedTimestamp);
-            firebaseDao.getAllComments(lastUpdatedTimestamp, firebaseListener);
+            firebaseModel.getAllComments(lastUpdatedTimestamp, firebaseListener);
         }
 
         @Override
@@ -97,7 +91,7 @@ public class Dao {
                 mPostRepository.insert(user);
             }
             setLastUpdatedTimestamp(lastUpdatedTimestamp);
-            firebaseDao.getAllUsers(lastUpdatedTimestamp, firebaseListener);
+            firebaseModel.getAllUsers(lastUpdatedTimestamp, firebaseListener);
 
         }
     };
@@ -141,7 +135,7 @@ public class Dao {
         void onComplete(List<Post> data);
     }
     public void getAllPosts(long from,IFirebaseListener listener) {
-        firebaseDao.getAllPosts(from,listener);
+        firebaseModel.getAllPosts(from,listener);
     }
 
 
@@ -154,7 +148,7 @@ public class Dao {
     }
 
     public void updatePost(Post post, UpdatePostListener listener){
-        firebaseDao.updatePost(post, listener);
+        firebaseModel.updatePost(post, listener);
     }
 
     public interface AddPostListener{
@@ -162,7 +156,7 @@ public class Dao {
     }
 
     public void addPost(Post post, AddPostListener listener) {
-        firebaseDao.addPost(post, listener);
+        firebaseModel.addPost(post, listener);
     }
 
     public interface DeletePostListener{
@@ -170,29 +164,29 @@ public class Dao {
     }
 
     public void deletePost(Post post, DeletePostListener listener) {
-        firebaseDao.deletePost(post, listener);
+        firebaseModel.deletePost(post, listener);
      //   mPostRepository.deletePost(postId);
     }
 
     public interface  OnUpdateComleted{
         void onUpdateCompleted(boolean success);
     }
-    public void signIn(String email, String password, final Dao.OnUpdateComleted listener)
+    public void signIn(String email, String password, final Model.OnUpdateComleted listener)
     {
-        firebaseDao.signIn(email,password,listener);
+        firebaseModel.signIn(email,password,listener);
     }
-    public void register(final User user, String password, final Uri userImageUri, final Dao.OnUpdateComleted listener)
+    public void register(final User user, String password, final Uri userImageUri, final Model.OnUpdateComleted listener)
     {
-        firebaseDao.registerUser(user,password,userImageUri,listener);
+        firebaseModel.registerUser(user,password,userImageUri,listener);
     }
     public void UpdateUserProfile(User user,OnUpdateComleted listener)
     {
-        firebaseDao.UpdateUserProfile(user,listener);
+        firebaseModel.UpdateUserProfile(user,listener);
     }
 
-    public void UploadUserProfileImage(String userId, Uri imageProfile, final Dao.UploadFileListener listener)
+    public void UploadUserProfileImage(String userId, Uri imageProfile, final Model.UploadFileListener listener)
     {
-        firebaseDao.uploadProfileImageFile(userId,imageProfile,listener);
+        firebaseModel.uploadProfileImageFile(userId,imageProfile,listener);
     }
 
     public interface GetUserDetailsListener{
@@ -203,11 +197,11 @@ public class Dao {
         void onComplete(Uri imageUri);
     }
 
-    public void uploadFile(Uri imageUri, UploadFileListener listener){ firebaseDao.uploadFile(imageUri, listener);}
+    public void uploadFile(Uri imageUri, UploadFileListener listener){ firebaseModel.uploadFile(imageUri, listener);}
 
-    public void getUserDetails(String id,Dao.GetUserDetailsListener listener)
+    public void getUserDetails(String id, Model.GetUserDetailsListener listener)
     {
-        firebaseDao.getUser(id,listener);
+        firebaseModel.getUser(id,listener);
     }
 
     public interface GetAllUsersListener{
@@ -215,7 +209,7 @@ public class Dao {
     }
 
     public void getAllUsers(GetAllUsersListener listener){
-        firebaseDao.getAllUsers(listener);
+        firebaseModel.getAllUsers(listener);
     }
 
 //    public interface GetAllCommentsListener{
@@ -223,7 +217,7 @@ public class Dao {
 //    }
 //
 //    public void getAllComments(String postId, GetAllCommentsListener listener){
-//        firebaseDao.getAllComments(postId, listener);
+//        firebaseModel.getAllComments(postId, listener);
 //    }
 
     public interface AddCommentListener{
@@ -231,7 +225,7 @@ public class Dao {
     }
 
     public void addComment( Comment comment, AddCommentListener listener){
-        firebaseDao.addComment(comment, listener);
+        firebaseModel.addComment(comment, listener);
     }
 
     public interface DeleteCommentListener{
@@ -239,7 +233,7 @@ public class Dao {
     }
 
     public void deleteComment(Comment comment, DeleteCommentListener listener){
-        firebaseDao.deleteComment(comment, listener);
+        firebaseModel.deleteComment(comment, listener);
      //   mPostRepository.deleteComment(commentId);
     }
 
@@ -248,7 +242,7 @@ public class Dao {
     }
 
     public void getComment(String postId, String commentId, GetCommentListener listener){
-        firebaseDao.getComment(postId, commentId, listener);
+        firebaseModel.getComment(postId, commentId, listener);
     }
 
     public interface UpdateCommentListener{
@@ -256,6 +250,6 @@ public class Dao {
     }
 
     public void updateComment(Comment comment, UpdateCommentListener listener){
-        firebaseDao.updateComment(comment, listener);
+        firebaseModel.updateComment(comment, listener);
     }
 }

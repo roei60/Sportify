@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
 
@@ -25,29 +25,29 @@ public class UserViewModel extends ViewModel {
     }
 
     public void init(LifecycleOwner lifecycleOwner) {
-        String userId = Dao.instance.getCurrentUserId();
-        Dao.instance.observeUserPostsListLiveData(lifecycleOwner, userId, posts -> mUserPostsListLiveData.postValue(posts));
+        String userId = Model.instance.getCurrentUserId();
+        Model.instance.observeUserPostsListLiveData(lifecycleOwner, userId, posts -> mUserPostsListLiveData.postValue(posts));
 
     }
 
     public void setUserId(String userId, LifecycleOwner lifecycleOwner, Observer<User> observer) {
         mUserLiveData.observe(lifecycleOwner,observer);
-        Dao.instance.observeUserByIdLiveData(userId,lifecycleOwner, user -> mUserLiveData.postValue(user));
+        Model.instance.observeUserByIdLiveData(userId,lifecycleOwner, user -> mUserLiveData.postValue(user));
     }
 
-    public void register(User user,String password,Uri imageUri,Dao.OnUpdateComleted listener){
-        Dao.instance.register(user,password,imageUri,listener);
+    public void register(User user, String password, Uri imageUri, Model.OnUpdateComleted listener){
+        Model.instance.register(user,password,imageUri,listener);
     }
 
-    public void updateUser(User user,Dao.OnUpdateComleted listener){
-        Dao.instance.UpdateUserProfile(user, listener);
+    public void updateUser(User user, Model.OnUpdateComleted listener){
+        Model.instance.UpdateUserProfile(user, listener);
     }
 
-    public void uploadFile(String userId,Uri imageUri, Dao.UploadFileListener listener){
-        Dao.instance.UploadUserProfileImage(userId,imageUri,listener);
+    public void uploadFile(String userId,Uri imageUri, Model.UploadFileListener listener){
+        Model.instance.UploadUserProfileImage(userId,imageUri,listener);
     }
 
-    public void signIn(String mEmail, String mPassword, Dao.OnUpdateComleted listener) {
-        Dao.instance.signIn(mEmail,mPassword,listener);
+    public void signIn(String mEmail, String mPassword, Model.OnUpdateComleted listener) {
+        Model.instance.signIn(mEmail,mPassword,listener);
     }
 }

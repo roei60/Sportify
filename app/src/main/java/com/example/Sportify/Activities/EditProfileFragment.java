@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.Sportify.R;
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.DateTimeUtils;
 import com.example.Sportify.viewModels.UserViewModel;
@@ -65,7 +64,7 @@ public class EditProfileFragment extends Fragment {
         mProgressDialog= new ProgressDialog(getActivity());
 
         viewModel= ViewModelProviders.of(this).get(UserViewModel.class);
-        viewModel.setUserId(Dao.instance.getCurrentUserId(),this.getViewLifecycleOwner(), currUser -> {
+        viewModel.setUserId(Model.instance.getCurrentUserId(),this.getViewLifecycleOwner(), currUser -> {
             this.currentUser=currUser ;
             editProfile_name_txt.setText(currUser .getName());
             String imageUri = currUser.getImageUri();
@@ -98,7 +97,7 @@ public class EditProfileFragment extends Fragment {
         return view;
     }
     private void UpdateWithImage(User user) {
-        viewModel.uploadFile(user.getId(), mUserImageUri, new Dao.UploadFileListener() {
+        viewModel.uploadFile(user.getId(), mUserImageUri, new Model.UploadFileListener() {
             public void onComplete(Uri imageUri) {
                 if (imageUri == null) {
                     Toast.makeText(getActivity(), "Something went wrong, pls try again later!", Toast.LENGTH_SHORT).show();
@@ -113,7 +112,7 @@ public class EditProfileFragment extends Fragment {
     }
     private void updateWithoutImage(User user)
     {
-        viewModel.updateUser(user, new Dao.OnUpdateComleted() {
+        viewModel.updateUser(user, new Model.OnUpdateComleted() {
             @Override
             public void onUpdateCompleted(boolean success) {
                 if (success) {

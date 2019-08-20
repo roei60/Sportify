@@ -18,8 +18,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.Sportify.R;
-import com.example.Sportify.adapters.CommentsListAdapter;
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.Adapters.CommentsListAdapter;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.CommentAndUser;
 import com.example.Sportify.utils.Common;
@@ -106,7 +106,7 @@ public class CommentsFragment extends Fragment {
                 comment.getComment().setIsDeleted(true);
                 comment.getComment().setLastUpdate(DateTimeUtils.getTimestampFromLong(new Date().getTime()));
 
-                viewModel.deleteComment(comment.getComment(), new Dao.DeleteCommentListener() {
+                viewModel.deleteComment(comment.getComment(), new Model.DeleteCommentListener() {
                     @Override
                     public void onComplete(Void avoid) {
                         mProgressDialog.dismiss();
@@ -141,12 +141,12 @@ public class CommentsFragment extends Fragment {
                 Log.d("Tag", "add comment clicked!");
                 Date date = new Date();
                 System.out.println(Consts.DATE_FORMAT.format(date));
-                Comment comment = new Comment(mCommentText.getText().toString(), Consts.DATE_FORMAT.format(date), Dao.instance.getCurrentUserId());
+                Comment comment = new Comment(mCommentText.getText().toString(), Consts.DATE_FORMAT.format(date), Model.instance.getCurrentUserId());
                 comment.setPostId(mPostId);
-                comment.setUserId(Dao.instance.getCurrentUserId());
+                comment.setUserId(Model.instance.getCurrentUserId());
                 comment.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
                 comment.setIsDeleted(false);
-                viewModel.addComment(comment, new Dao.AddCommentListener() {
+                viewModel.addComment(comment, new Model.AddCommentListener() {
                     @Override
                     public void onComplete(Comment comment) {
                         mProgressDialog.dismiss();

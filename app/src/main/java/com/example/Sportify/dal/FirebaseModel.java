@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.User;
-import com.example.Sportify.utils.Consts;
 import com.example.Sportify.utils.DateTimeUtils;
 import com.example.Sportify.utils.FileUtils;
 import com.google.android.gms.tasks.Continuation;
@@ -21,7 +20,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,24 +28,17 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Vector;
 
 import javax.annotation.Nullable;
 
-public class FirebaseDao {
+public class FirebaseModel {
     User _currentUser;
     FirebaseFirestore db;
     FirebaseAuth auth;
@@ -59,7 +50,7 @@ public class FirebaseDao {
     private ListenerRegistration listenerRegistrationComment;
     private ListenerRegistration listenerRegistrationUsers;
 
-    public FirebaseDao() {
+    public FirebaseModel() {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
@@ -171,7 +162,7 @@ public class FirebaseDao {
         });
     }
 
-    public void updatePost(final Post post, final Dao.UpdatePostListener listener){
+    public void updatePost(final Post post, final Model.UpdatePostListener listener){
         postRef.document(post.getId()).set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -186,7 +177,7 @@ public class FirebaseDao {
         });
     }
 
-    public void addPost(final Post post, final Dao.AddPostListener listener) {
+    public void addPost(final Post post, final Model.AddPostListener listener) {
         String id = postRef.document().getId();
         post.setId(id);
         postRef.document(id).set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -203,7 +194,7 @@ public class FirebaseDao {
         });
     }
 
-    public void deletePost(Post post, final Dao.DeletePostListener listener) {
+    public void deletePost(Post post, final Model.DeletePostListener listener) {
         postRef.document(post.getId()).set(post)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -213,7 +204,7 @@ public class FirebaseDao {
                 });
     }
 
-    public void uploadFile(Uri imageUri, final Dao.UploadFileListener listener){
+    public void uploadFile(Uri imageUri, final Model.UploadFileListener listener){
         storage = FirebaseStorage.getInstance().getReference("Uploads/" + auth.getCurrentUser().getUid() + "/ProfilePics");
 
         final StorageReference fileRef = storage.child(System.currentTimeMillis() + "." + FileUtils.getFileExtension(imageUri));
@@ -238,7 +229,7 @@ public class FirebaseDao {
             }
         });
     }
-    public void signIn(String email, String password, final Dao.OnUpdateComleted listener){
+    public void signIn(String email, String password, final Model.OnUpdateComleted listener){
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -247,7 +238,7 @@ public class FirebaseDao {
         });
     }
 
-    public void registerUser(final User user, String password, final Uri userImageUri, final Dao.OnUpdateComleted listener)
+    public void registerUser(final User user, String password, final Uri userImageUri, final Model.OnUpdateComleted listener)
     {
         auth.createUserWithEmailAndPassword(user.getEmail(),password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -256,7 +247,7 @@ public class FirebaseDao {
                     // if user image chosen - upload to firebase sorage
                     final String uid = auth.getCurrentUser().getUid();
                     if (userImageUri != null)
-                        uploadProfileImageFile(uid, userImageUri, new Dao.UploadFileListener() {
+                        uploadProfileImageFile(uid, userImageUri, new Model.UploadFileListener() {
                             @Override
                             public void onComplete(Uri imageUri) {
                                 user.setImageUri(imageUri.toString());
@@ -272,7 +263,7 @@ public class FirebaseDao {
             }
         });
     }
-    private void saveUser(User user, final Dao.OnUpdateComleted listener) {
+    private void saveUser(User user, final Model.OnUpdateComleted listener) {
         String uid = auth.getCurrentUser().getUid();
         user.setId(uid);
         java.util.Date date = new Date();
@@ -288,7 +279,7 @@ public class FirebaseDao {
     }
 
 
-    public void  getUser(final String id, final Dao.GetUserDetailsListener listener){
+    public void  getUser(final String id, final Model.GetUserDetailsListener listener){
         db.collection("Users").document(id).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -319,7 +310,7 @@ public class FirebaseDao {
                 });
     }
 
-    public void UpdateUserProfile(final User user, final Dao.OnUpdateComleted listener) {
+    public void UpdateUserProfile(final User user, final Model.OnUpdateComleted listener) {
         final CollectionReference UserRef = db.collection("Users");
         userRef.document(user.getId()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -338,7 +329,7 @@ public class FirebaseDao {
     }
 
 
-    public void uploadProfileImageFile(String userId, Uri imageProfile, final Dao.UploadFileListener listener)
+    public void uploadProfileImageFile(String userId, Uri imageProfile, final Model.UploadFileListener listener)
     {
         final StorageReference fileRef = FirebaseStorage.getInstance().getReference("Uploads/" + userId + "/ProfilePics")
                 .child(System.currentTimeMillis() + "." + FileUtils.getFileExtension(imageProfile));
@@ -364,7 +355,7 @@ public class FirebaseDao {
         });
     }
 
-    public void getAllUsers(final Dao.GetAllUsersListener listener){
+    public void getAllUsers(final Model.GetAllUsersListener listener){
         db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -385,7 +376,7 @@ public class FirebaseDao {
         });
     }
 
-    public void updateComment(final Comment comment, final Dao.UpdateCommentListener listener){
+    public void updateComment(final Comment comment, final Model.UpdateCommentListener listener){
         commentRef.document(comment.getId()).set(comment).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -400,7 +391,7 @@ public class FirebaseDao {
         });
     }
 
-    public void addComment(final Comment comment, final Dao.AddCommentListener listener) {
+    public void addComment(final Comment comment, final Model.AddCommentListener listener) {
         String id = commentRef.document().getId();
         comment.setId(id);
         commentRef.document(id).set(comment).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -418,7 +409,7 @@ public class FirebaseDao {
     }
 
 
-    public void deleteComment(final Comment comment, final Dao.DeleteCommentListener listener){
+    public void deleteComment(final Comment comment, final Model.DeleteCommentListener listener){
         commentRef.document(comment.getId()).set(comment).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -427,9 +418,9 @@ public class FirebaseDao {
         });
     }
 
-    public void getComment(final String postId, final String commentId, final Dao.GetCommentListener listener){
+    public void getComment(final String postId, final String commentId, final Model.GetCommentListener listener){
 
-//        getPost(postId, new Dao.GetPostListener() {
+//        getPost(postId, new Model.GetPostListener() {
 //            @Override
 //            public void onComplete(Post post) {
 //                String userId = post.getAuthor().getId();
@@ -440,7 +431,7 @@ public class FirebaseDao {
 //                            public void onSuccess(DocumentSnapshot documentSnapshot) {
 //                                final Comment comment = documentSnapshot.toObject(Comment.class);
 //                                comment.setId(documentSnapshot.getId());
-//                                getUser(comment.getUserId(), new Dao.GetUserDetailsListener() {
+//                                getUser(comment.getUserId(), new Model.GetUserDetailsListener() {
 //                                    @Override
 //                                    public void onComplete(User user) {
 //                                        comment.setAuthor(user);

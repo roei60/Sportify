@@ -3,18 +3,16 @@ package com.example.Sportify.Adapters;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.Sportify.R;
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
@@ -141,8 +139,8 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         public void bind(PostAndUser post1){
             Post post=post1.getPost();
             User user=post1.getUser();
-            //post.setAuthor(Dao.instance.getUserById(post.getAuthorId()));
-            if (user.getId().equals(Dao.instance.getCurrentUserId())){
+            //post.setAuthor(Model.instance.getUserById(post.getAuthorId()));
+            if (user.getId().equals(Model.instance.getCurrentUserId())){
                 // visible remove and edit buttons
                 mEdit.setVisibility(View.VISIBLE);
                 mDelete.setVisibility(View.VISIBLE);

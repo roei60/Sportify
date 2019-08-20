@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.Sportify.R;
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
 import com.example.Sportify.viewModels.PostsListViewModel;
@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment {
 
         mPostsListViewModel = ViewModelProviders.of(this).get(PostsListViewModel.class);
         mViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        mViewModel.setUserId(Dao.instance.getCurrentUserId(),this.getViewLifecycleOwner(), user -> {
+        mViewModel.setUserId(Model.instance.getCurrentUserId(),this.getViewLifecycleOwner(), user -> {
             FillUserDetails(user);
         });
 
@@ -135,7 +135,7 @@ public class ProfileFragment extends Fragment {
                 Log.d("TAG","item click: " + index);
                 //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
                 final PostAndUser post = PostsListAdapter.mData.get(index);
-                mPostsListViewModel.deltePost(post, new Dao.DeletePostListener() {
+                mPostsListViewModel.deltePost(post, new Model.DeletePostListener() {
                     @Override
                     public void onComplete(Void avoid) {
                         Log.d("TAG","deleted post id: " + post.getPost().getId());

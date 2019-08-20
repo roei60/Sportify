@@ -24,7 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.Sportify.R;
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.Post;
 import com.example.Sportify.utils.Consts;
 import com.example.Sportify.utils.DateTimeUtils;
@@ -111,7 +111,7 @@ public class PostFragment extends Fragment {
 
                     Calendar now = Calendar.getInstance();
                     post.setLastUpdate(DateTimeUtils.getTimeStamp(now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH)));
-                    post.setAuthorId(Dao.instance.getCurrentUserId());
+                    post.setAuthorId(Model.instance.getCurrentUserId());
                     post.setIsDeleted(false);
                     // if post not have image just add post
                     if (mPostImageUri == null){
@@ -132,7 +132,7 @@ public class PostFragment extends Fragment {
     }
 
     private void addPost(Post post){
-        viewModel.uploadPost(post, new Dao.AddPostListener() {
+        viewModel.uploadPost(post, new Model.AddPostListener() {
             @Override
             public void onComplete(Post post) {
                 System.out.println("CreationDate : " + post.getCreationDate());
@@ -144,7 +144,7 @@ public class PostFragment extends Fragment {
     }
 
     private void uploadFileAndAddPost(Uri imageUri, Post post){
-        viewModel.uploadFile(imageUri, new Dao.UploadFileListener() {
+        viewModel.uploadFile(imageUri, new Model.UploadFileListener() {
             @Override
             public void onComplete(Uri imageUri) {
                 post.setPicture(imageUri.toString());
@@ -194,7 +194,7 @@ public class PostFragment extends Fragment {
     }
 
     private void uploadFileAndUpdatePost(Uri imageUri, Post post){
-        viewModel.uploadFile(imageUri, new Dao.UploadFileListener() {
+        viewModel.uploadFile(imageUri, new Model.UploadFileListener() {
             @Override
             public void onComplete(Uri imageUri) {
                 post.setPicture(imageUri.toString());
@@ -204,7 +204,7 @@ public class PostFragment extends Fragment {
     }
 
     private void updatePost(Post post){
-        viewModel.updatePost(post, new Dao.UpdatePostListener() {
+        viewModel.updatePost(post, new Model.UpdatePostListener() {
             @Override
             public void onComplete(Post post) {
                 System.out.println("CreationDate : " + post.getCreationDate());

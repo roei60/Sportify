@@ -2,7 +2,6 @@ package com.example.Sportify.Activities;
 
 
 import android.app.ProgressDialog;
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,7 +11,6 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.Sportify.R;
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.CommentAndUser;
 import com.example.Sportify.models.User;
@@ -95,7 +93,7 @@ public class EditCommentFragment extends Fragment {
                     comment.setCreationDate(Consts.DATE_FORMAT.format(date));
                     comment.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
                     comment.setIsDeleted(false);
-                    mViewModel.updateComment(comment, new Dao.UpdateCommentListener() {
+                    mViewModel.updateComment(comment, new Model.UpdateCommentListener() {
                         @Override
                         public void onComplete(Comment comment) {
                             mProgressDialog.dismiss();

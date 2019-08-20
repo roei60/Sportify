@@ -21,7 +21,7 @@ import androidx.navigation.Navigation;
 
 
 import com.example.Sportify.R;
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.Common;
 import com.example.Sportify.viewModels.UserViewModel;
@@ -38,14 +38,6 @@ import java.util.regex.Pattern;
 import static android.app.Activity.RESULT_OK;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RegisterFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RegisterFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RegisterFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -178,7 +170,7 @@ public class RegisterFragment extends Fragment {
                     mProgressDialog.show();
                     User user=new User(mName,mEmail,"");
 
-                    viewModel.register(user, mPassword, mUserImageUri, new Dao.OnUpdateComleted() {
+                    viewModel.register(user, mPassword, mUserImageUri, new Model.OnUpdateComleted() {
                         @Override
                         public void onUpdateCompleted(boolean success) {
                             if(success) {
@@ -195,7 +187,7 @@ public class RegisterFragment extends Fragment {
                 else {
                     mProgressDialog.setMessage("Login user...");
                     mProgressDialog.show();
-                    viewModel.signIn(mEmail, mPassword, new Dao.OnUpdateComleted() {
+                    viewModel.signIn(mEmail, mPassword, new Model.OnUpdateComleted() {
                         @Override
                         public void onUpdateCompleted(boolean success) {
                             if (success) {

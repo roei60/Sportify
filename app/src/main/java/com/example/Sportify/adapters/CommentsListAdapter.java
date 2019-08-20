@@ -1,4 +1,4 @@
-package com.example.Sportify.adapters;
+package com.example.Sportify.Adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,14 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.Sportify.R;
-import com.example.Sportify.dal.Dao;
+import com.example.Sportify.dal.Model;
 import com.example.Sportify.models.Comment;
 import com.example.Sportify.models.CommentAndUser;
 import com.example.Sportify.models.User;
@@ -125,7 +123,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             Comment comment = commentAndUser.getComment();
             User user = commentAndUser.getUser();
 
-            if (user.getId().equals(Dao.instance.getCurrentUserId())){
+            if (user.getId().equals(Model.instance.getCurrentUserId())){
                 // visible remove and edit buttons
                 mEdit.setVisibility(View.VISIBLE);
                 mDelete.setVisibility(View.VISIBLE);
