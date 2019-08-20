@@ -34,9 +34,17 @@ public class CommentsListViewModel extends ViewModel {
         Model.instance.observePostLiveData(lifecycleOwner,postId, posts -> mPostLiveData.postValue(posts));
     }
 
-    public void init(LifecycleOwner lifecycleOwner) {
+    public void init(LifecycleOwner lifecycleOwner, onPostDeletedListener listener) {
+        if (mPostLiveData.getValue() == null){
+            listener.onDeleted();
+            return;
+        }
         String postId = mPostLiveData.getValue().getId();
         Model.instance.observeCommentsListLiveData(lifecycleOwner, postId, comments -> mCommentsLiveData.postValue(comments));
 
+    }
+
+    public interface onPostDeletedListener{
+        void onDeleted();
     }
 }
