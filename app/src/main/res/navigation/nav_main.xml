@@ -50,7 +50,7 @@
     <fragment
         android:id="@+id/postsListFragment"
         android:name="com.example.Sportify.Activities.PostsListFragment"
-        android:label="fragment_posts_list"
+        android:label="posts"
         tools:layout="@layout/fragment_posts_list">
         <action
             android:id="@+id/action_postsListFragment_to_profileFragment"
@@ -81,8 +81,8 @@
     <fragment
         android:id="@+id/commentsFragment"
         android:name="com.example.Sportify.Activities.CommentsFragment"
-        android:label="fragment_comments"
-        tools:layout="@layout/fragment_comments" >
+        android:label="comments"
+        tools:layout="@layout/fragment_comments">
         <argument
             android:name="postId"
             app:argType="string" />
@@ -93,8 +93,8 @@
     <fragment
         android:id="@+id/postFragment"
         android:name="com.example.Sportify.Activities.PostFragment"
-        android:label="fragment_post"
-        tools:layout="@layout/fragment_post" >
+        android:label="post"
+        tools:layout="@layout/fragment_post">
         <action
             android:id="@+id/action_postFragment_to_postsListFragment"
             app:destination="@id/postsListFragment"
@@ -108,13 +108,13 @@
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.example.Sportify.Activities.EditProfileFragment"
-        android:label="fragment_edit_profile"
+        android:label="Profile"
         tools:layout="@layout/fragment_edit_profile" />
     <fragment
         android:id="@+id/editCommentFragment"
         android:name="com.example.Sportify.Activities.EditCommentFragment"
-        android:label="fragment_edit_comment"
-        tools:layout="@layout/fragment_edit_comment" >
+        android:label="edit comment"
+        tools:layout="@layout/fragment_edit_comment">
         <action
             android:id="@+id/action_editCommentFragment_to_commentsFragment"
             app:destination="@id/commentsFragment"
