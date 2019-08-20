@@ -143,10 +143,6 @@ public class MainActivity extends AppCompatActivity  implements
                 navController.navigate(R.id.postFragment, bundle);
                 break;
 
-            case R.id.third:
-                navController.navigate(R.id.commentsFragment);
-                break;
-
         }
         return true;
 
