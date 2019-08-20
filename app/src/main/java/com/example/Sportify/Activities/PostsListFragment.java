@@ -27,6 +27,7 @@ import com.example.Sportify.models.Post;
 import com.example.Sportify.models.PostAndUser;
 import com.example.Sportify.models.User;
 import com.example.Sportify.utils.Consts;
+import com.example.Sportify.utils.DateTimeUtils;
 import com.example.Sportify.viewModels.PostsListViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -181,6 +182,8 @@ public class PostsListFragment extends Fragment {
                 Log.d("TAG","item click: " + index);
                 //Navigation.findNavController(view).navigate(R.id.action_cardsListFragment_to_cardDetailsFragment);
                 final PostAndUser post = PostsListAdapter.mData.get(index);
+                post.getPost().setIsDeleted(true);
+                post.getPost().setLastUpdate(DateTimeUtils.getTimestampFromLong(new Date().getTime()));
                 mViewModel.deltePost(post, new Dao.DeletePostListener() {
                     @Override
                     public void onComplete(Void avoid) {

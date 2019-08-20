@@ -44,6 +44,9 @@ public class Post {
     private String mCreationDate;
     @ColumnInfo(name = "post_lastUpdate")
     private Timestamp lastUpdate;
+    private boolean mIsDeleted;
+
+
 
     public Post(){
         // Need empty ctor for deserialization from DB
@@ -167,5 +170,13 @@ public class Post {
 
     public void setAuthorId(String AuthorId) {
         this.mAuthorId = AuthorId;
+    }
+
+    public boolean getIsDeleted() {
+        return mIsDeleted;
+    }
+
+    public void setIsDeleted(boolean mIsDeleted) {
+        this.mIsDeleted = mIsDeleted;
     }
 }

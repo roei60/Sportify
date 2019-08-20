@@ -22,14 +22,14 @@ public interface PostDao {
     void deleteAll();
 
     @Query("SELECT * from post_table" +
-            " INNER JOIN user_table ON mAuthorId=user_id")
+            " INNER JOIN user_table ON mAuthorId=user_id  and mIsDeleted=0 order by mCreationDate desc")
     LiveData<List<PostAndUser>> getAllPosts();
 
-    @Query("SELECT * from post_table WHERE post_id=:postId")
+    @Query("SELECT * from post_table WHERE post_id=:postId  and mIsDeleted=0 order by mCreationDate desc ")
     LiveData<Post> getPostById(String postId);
 
     @Query("SELECT * from post_table " +
-            "INNER JOIN user_table ON mAuthorId=user_id WHERE mAuthorId =:authorId ")
+            "INNER JOIN user_table ON mAuthorId=user_id WHERE mAuthorId =:authorId and mIsDeleted=0 order by mCreationDate desc ")
     LiveData<List<PostAndUser>> getAllPostsByUserId(String authorId);
 
     @Query("DELETE FROM post_table WHERE post_id=:postId")

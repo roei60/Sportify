@@ -22,13 +22,13 @@ public interface CommentDao {
     void deleteAll();
 
     @Query("SELECT * from comment_table " +
-                " INNER JOIN user_table ON mUserId=user_id WHERE mPostId=:postId")
+                " INNER JOIN user_table ON mUserId=user_id WHERE mPostId=:postId and mIsDeleted=0")
     LiveData<List<CommentAndUser>> getAllCommentByPostId(String postId);
 
     @Query("DELETE FROM comment_table WHERE comment_id=:commentId")
     void delete(String commentId);
 
     @Query("SELECT * from comment_table" +
-            " INNER JOIN user_table ON mUserId=user_id WHERE comment_id=:commentId")
+            " INNER JOIN user_table ON mUserId=user_id WHERE comment_id=:commentId and mIsDeleted=0")
     LiveData<CommentAndUser> getCommentById(String commentId);
 }

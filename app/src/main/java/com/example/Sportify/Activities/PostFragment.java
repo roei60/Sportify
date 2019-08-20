@@ -112,7 +112,7 @@ public class PostFragment extends Fragment {
                     Calendar now = Calendar.getInstance();
                     post.setLastUpdate(DateTimeUtils.getTimeStamp(now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH)));
                     post.setAuthorId(Dao.instance.getCurrentUserId());
-
+                    post.setIsDeleted(false);
                     // if post not have image just add post
                     if (mPostImageUri == null){
                         mProgressDialog.setTitle(UPLOAD_MASSAGE_TEXT);
@@ -244,6 +244,7 @@ public class PostFragment extends Fragment {
         else
             post.setPicture(null);
         post.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
+        post.setIsDeleted(false);
         return post;
     }
 

@@ -28,6 +28,7 @@ public class Comment {
     private String mCreationDate;
     @ColumnInfo(name = "comment_lastUpdate")
     private Timestamp lastUpdate;
+    private boolean mIsDeleted;
 
     public String getPostId() {
         return mPostId;
@@ -94,5 +95,13 @@ public class Comment {
 
     public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public boolean getIsDeleted() {
+        return mIsDeleted;
+    }
+
+    public void setIsDeleted(boolean mIsDeleted) {
+        this.mIsDeleted = mIsDeleted;
     }
 }

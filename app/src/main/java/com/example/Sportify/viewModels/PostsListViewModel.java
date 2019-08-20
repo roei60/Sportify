@@ -20,7 +20,7 @@ public class PostsListViewModel extends ViewModel {
     }
 
     public void deltePost(PostAndUser post, Dao.DeletePostListener listener){
-        Dao.instance.deletePost(post.getPost().getId(), listener);
+        Dao.instance.deletePost(post.getPost(), listener);
     }
 
     public void observePostsList(LifecycleOwner lifecycleOwner, Observer<List<PostAndUser>> observer) {

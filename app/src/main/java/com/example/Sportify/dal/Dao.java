@@ -169,9 +169,9 @@ public class Dao {
         void onComplete(Void avoid);
     }
 
-    public void deletePost(String postId, DeletePostListener listener) {
-        firebaseDao.deletePost(postId, listener);
-        mPostRepository.deletePost(postId);
+    public void deletePost(Post post, DeletePostListener listener) {
+        firebaseDao.deletePost(post, listener);
+     //   mPostRepository.deletePost(postId);
     }
 
     public interface  OnUpdateComleted{
@@ -238,9 +238,9 @@ public class Dao {
         void onComplete(Void avoid);
     }
 
-    public void deleteComment(String commentId, DeleteCommentListener listener){
-        firebaseDao.deleteComment(commentId, listener);
-        mPostRepository.deleteComment(commentId);
+    public void deleteComment(Comment comment, DeleteCommentListener listener){
+        firebaseDao.deleteComment(comment, listener);
+     //   mPostRepository.deleteComment(commentId);
     }
 
     public interface GetCommentListener{

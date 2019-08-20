@@ -103,6 +103,9 @@ public class CommentsFragment extends Fragment {
                 mProgressDialog.show();
                 Log.d("TAG","item click: " + index);
                 final CommentAndUser comment = CommentsListAdapter.mData.get(index);
+                comment.getComment().setIsDeleted(true);
+                comment.getComment().setLastUpdate(DateTimeUtils.getTimestampFromLong(new Date().getTime()));
+
                 viewModel.deleteComment(comment.getComment(), new Dao.DeleteCommentListener() {
                     @Override
                     public void onComplete(Void avoid) {
@@ -142,7 +145,7 @@ public class CommentsFragment extends Fragment {
                 comment.setPostId(mPostId);
                 comment.setUserId(Dao.instance.getCurrentUserId());
                 comment.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
-
+                comment.setIsDeleted(false);
                 viewModel.addComment(comment, new Dao.AddCommentListener() {
                     @Override
                     public void onComplete(Comment comment) {

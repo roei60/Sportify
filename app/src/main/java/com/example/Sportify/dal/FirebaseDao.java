@@ -203,8 +203,8 @@ public class FirebaseDao {
         });
     }
 
-    public void deletePost(String postId, final Dao.DeletePostListener listener) {
-        postRef.document(postId).delete()
+    public void deletePost(Post post, final Dao.DeletePostListener listener) {
+        postRef.document(post.getId()).set(post)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -418,8 +418,8 @@ public class FirebaseDao {
     }
 
 
-    public void deleteComment(final String commentId, final Dao.DeleteCommentListener listener){
-        commentRef.document(commentId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+    public void deleteComment(final Comment comment, final Dao.DeleteCommentListener listener){
+        commentRef.document(comment.getId()).set(comment).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 listener.onComplete(aVoid);

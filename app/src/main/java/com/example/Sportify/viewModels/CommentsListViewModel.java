@@ -22,7 +22,7 @@ public class CommentsListViewModel extends ViewModel {
     }
 
     public void deleteComment(Comment comment, Dao.DeleteCommentListener listener){
-        Dao.instance.deleteComment(comment.getId(), listener);
+        Dao.instance.deleteComment(comment, listener);
     }
 
     public void observeCommentsList(LifecycleOwner lifecycleOwner, Observer<List<CommentAndUser>> observer) {

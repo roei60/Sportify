@@ -94,6 +94,7 @@ public class EditCommentFragment extends Fragment {
                     System.out.println(Consts.DATE_FORMAT.format(date));
                     comment.setCreationDate(Consts.DATE_FORMAT.format(date));
                     comment.setLastUpdate(DateTimeUtils.getTimestampFromLong(date.getTime()));
+                    comment.setIsDeleted(false);
                     mViewModel.updateComment(comment, new Dao.UpdateCommentListener() {
                         @Override
                         public void onComplete(Comment comment) {
