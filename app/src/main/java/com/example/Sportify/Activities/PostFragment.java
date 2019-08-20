@@ -165,7 +165,7 @@ public class PostFragment extends Fragment {
                 Picasso.with(getContext()).load(post.getPicture()).fit().into(mPostImageView);
             }
             else
-                mPostImageView.setImageResource(R.drawable.user_default_image);
+                mPostImageView.setImageResource(R.drawable.default_post_mage);
 
             mPostSendBt.setOnClickListener(new View.OnClickListener() {
                 @Override
