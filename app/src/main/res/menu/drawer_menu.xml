@@ -9,13 +9,8 @@
 
         <item
             android:id="@+id/second"
-            android:icon="@drawable/avatar"
+            android:icon="@android:drawable/ic_input_add"
             android:title="Add New Post" />
-
-        <item
-            android:id="@+id/third"
-            android:icon="@drawable/avatar"
-            android:title="Comments" />
 
     </group>
 </menu>
