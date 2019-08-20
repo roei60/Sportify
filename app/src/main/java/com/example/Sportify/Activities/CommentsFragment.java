@@ -3,7 +3,9 @@ package com.example.Sportify.Activities;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -89,7 +91,13 @@ public class CommentsFragment extends Fragment {
                     addButtonsClickListeners(view);
                 }
             });
-            viewModel.init(getViewLifecycleOwner());
+            viewModel.init(getViewLifecycleOwner(), new CommentsListViewModel.onPostDeletedListener() {
+                @Override
+                public void onDeleted() {
+                    Log.d("TAG", "onDeleted: ");
+                    ((AppCompatActivity)getContext()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+            });
         });
 
         return view;
