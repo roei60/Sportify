@@ -137,7 +137,7 @@ public class PostFragment extends Fragment {
             public void onComplete(Post post) {
                 System.out.println("CreationDate : " + post.getCreationDate());
                 mProgressDialog.dismiss();
-                Navigation.findNavController(getView()).navigate(R.id.action_postFragment_to_postsListFragment);
+                ((AppCompatActivity)getContext()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 Toast.makeText(getActivity(), "Post added successfully!", Toast.LENGTH_SHORT).show();
             }
         });

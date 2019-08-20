@@ -95,11 +95,6 @@
         android:name="com.example.Sportify.Activities.PostFragment"
         android:label="post"
         tools:layout="@layout/fragment_post">
-        <action
-            android:id="@+id/action_postFragment_to_postsListFragment"
-            app:destination="@id/postsListFragment"
-            app:popUpTo="@+id/postFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="postId"
             app:argType="string"
