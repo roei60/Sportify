@@ -39,7 +39,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 public class FirebaseModel {
-    User _currentUser;
     FirebaseFirestore db;
     FirebaseAuth auth;
     StorageReference storage;
@@ -54,16 +53,13 @@ public class FirebaseModel {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setPersistenceEnabled(false).build();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(false).build();
         db.setFirestoreSettings(settings);
 
         userRef=db.collection("Users");
         postRef=db.collection("Posts");
         commentRef=db.collection("Comments");
     }
-
-
 
     public void getAllComments(long updateFrom,final IFirebaseListener listener) {
         if(listenerRegistrationComment!=null)
@@ -98,7 +94,6 @@ public class FirebaseModel {
             }
         });
     }
-
 
     public void getAllPosts(long updateFrom,final IFirebaseListener listener) {
         if(listenerRegistrationPost!=null)
@@ -278,38 +273,6 @@ public class FirebaseModel {
 
     }
 
-
-    public void  getUser(final String id, final Model.GetUserDetailsListener listener){
-        db.collection("Users").document(id).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot snapshot = task.getResult();
-                            final User user= snapshot.toObject(User.class);
-                            user.setId(id);
-                            snapshot.getReference().collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                    for(QueryDocumentSnapshot postDoc: queryDocumentSnapshots)
-                                    {
-                                        Post post = postDoc.toObject(Post.class);
-                                        post.setId(postDoc.getId());
-                                        post.setAuthor(user);
-                                        user.getPosts().add(post);
-                                    }
-                                    listener.onComplete(user);
-
-                                }
-                            });
-
-                            return;
-                        }
-                        listener.onComplete(null);
-                    }
-                });
-    }
-
     public void UpdateUserProfile(final User user, final Model.OnUpdateComleted listener) {
         final CollectionReference UserRef = db.collection("Users");
         userRef.document(user.getId()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -327,7 +290,6 @@ public class FirebaseModel {
             }
         });
     }
-
 
     public void uploadProfileImageFile(String userId, Uri imageProfile, final Model.UploadFileListener listener)
     {
@@ -349,29 +311,7 @@ public class FirebaseModel {
                      listener.onComplete(downloadUri);
                 } else {
                     listener.onComplete(null);
-                    //Toast.makeText(getActivity(), "Something got wrong.. pls try again", Toast.LENGTH_LONG).show();
                 }
-            }
-        });
-    }
-
-    public void getAllUsers(final Model.GetAllUsersListener listener){
-        db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    QuerySnapshot result = task.getResult();
-                    List<DocumentSnapshot> documents = result.getDocuments();
-                    List<User> users = new ArrayList<>();
-                    for (DocumentSnapshot userDoc : documents) {
-                        User user = userDoc.toObject(User.class);
-                        user.setId(userDoc.getId());
-                        users.add(user);
-                    }
-                    listener.onComplete(users);
-                }
-                else
-                    listener.onComplete(null);
             }
         });
     }
@@ -408,7 +348,6 @@ public class FirebaseModel {
             });
     }
 
-
     public void deleteComment(final Comment comment, final Model.DeleteCommentListener listener){
         commentRef.document(comment.getId()).set(comment).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -417,32 +356,4 @@ public class FirebaseModel {
             }
         });
     }
-
-    public void getComment(final String postId, final String commentId, final Model.GetCommentListener listener){
-
-//        getPost(postId, new Model.GetPostListener() {
-//            @Override
-//            public void onComplete(Post post) {
-//                String userId = post.getAuthor().getId();
-//                db.collection("Users").document(userId).collection("Posts").document(postId)
-//                        .collection("Comments").document(commentId).get()
-//                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                            @Override
-//                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                                final Comment comment = documentSnapshot.toObject(Comment.class);
-//                                comment.setId(documentSnapshot.getId());
-//                                getUser(comment.getUserId(), new Model.GetUserDetailsListener() {
-//                                    @Override
-//                                    public void onComplete(User user) {
-//                                        comment.setAuthor(user);
-//                                        listener.onComplete(comment);
-//                                    }
-//                                });
-//                            }
-//                        });
-//            }
-//        });
-    }
-
-
 }

@@ -139,7 +139,6 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         public void bind(PostAndUser post1){
             Post post=post1.getPost();
             User user=post1.getUser();
-            //post.setAuthor(Model.instance.getUserById(post.getAuthorId()));
             if (user.getId().equals(Model.instance.getCurrentUserId())){
                 // visible remove and edit buttons
                 mEdit.setVisibility(View.VISIBLE);

@@ -27,15 +27,6 @@ public class Model {
     FirebaseModel firebaseModel;
     private PostRepository mPostRepository;
 
-    public LiveData<User> getCurrentUser()
-    {
-        return mPostRepository.getUserById(firebaseModel.auth.getCurrentUser().getUid());
-    }
-
-    public String getCurrentUserId()
-    {
-        return firebaseModel.auth.getCurrentUser().getUid();
-    }
 
 
     private Model() {
@@ -64,7 +55,6 @@ public class Model {
             setLastUpdatedTimestamp(lastUpdatedTimestamp);
             firebaseModel.getAllPosts(lastUpdatedTimestamp, firebaseListener);
 
-            Log.d("bblls", "fff");
         }
 
         @Override
@@ -88,6 +78,7 @@ public class Model {
             for (User user:users) {
                 lastUpdatedTimestamp=Math.max(TimestampConverters.dateToTimestamp(user.getLastUpdate()),lastUpdatedTimestamp);
 
+
                 mPostRepository.insert(user);
             }
             setLastUpdatedTimestamp(lastUpdatedTimestamp);
@@ -95,6 +86,10 @@ public class Model {
 
         }
     };
+    public String getCurrentUserId()
+    {
+        return firebaseModel.auth.getCurrentUser().getUid();
+    }
     private long getLastUpdatedTimestamp() {
         return sharedPreferences.getLong(LAST_UPDATED_KEY, 0);
     }
@@ -123,24 +118,8 @@ public class Model {
         mPostRepository.getAllPostsByUserId(userId).observe(lifecycleOwner, observer);
     }
 
-    public void observeUsersLiveData(LifecycleOwner lifecycleOwner, Observer<List<User>> observer) {
-        mPostRepository.getAllUsers().observe(lifecycleOwner, observer);
-    }
     public void observeUserByIdLiveData(String userId,LifecycleOwner lifecycleOwner, Observer<User> observer) {
         mPostRepository.getUserById(userId).observe(lifecycleOwner, observer);
-    }
-
-
-    public interface GetAllPostsListener {
-        void onComplete(List<Post> data);
-    }
-    public void getAllPosts(long from,IFirebaseListener listener) {
-        firebaseModel.getAllPosts(from,listener);
-    }
-
-
-    public LiveData<Post> getPost(String postId) {
-        return mPostRepository.getPostById(postId);
     }
 
     public interface UpdatePostListener{
@@ -165,7 +144,6 @@ public class Model {
 
     public void deletePost(Post post, DeletePostListener listener) {
         firebaseModel.deletePost(post, listener);
-     //   mPostRepository.deletePost(postId);
     }
 
     public interface  OnUpdateComleted{
@@ -199,26 +177,9 @@ public class Model {
 
     public void uploadFile(Uri imageUri, UploadFileListener listener){ firebaseModel.uploadFile(imageUri, listener);}
 
-    public void getUserDetails(String id, Model.GetUserDetailsListener listener)
-    {
-        firebaseModel.getUser(id,listener);
-    }
-
     public interface GetAllUsersListener{
         void onComplete(List<User> users);
     }
-
-    public void getAllUsers(GetAllUsersListener listener){
-        firebaseModel.getAllUsers(listener);
-    }
-
-//    public interface GetAllCommentsListener{
-//        void onComplete(List<Comment> comments);
-//    }
-//
-//    public void getAllComments(String postId, GetAllCommentsListener listener){
-//        firebaseModel.getAllComments(postId, listener);
-//    }
 
     public interface AddCommentListener{
         void onComplete(Comment comment);
@@ -234,15 +195,6 @@ public class Model {
 
     public void deleteComment(Comment comment, DeleteCommentListener listener){
         firebaseModel.deleteComment(comment, listener);
-     //   mPostRepository.deleteComment(commentId);
-    }
-
-    public interface GetCommentListener{
-        void onComplete(Comment comment);
-    }
-
-    public void getComment(String postId, String commentId, GetCommentListener listener){
-        firebaseModel.getComment(postId, commentId, listener);
     }
 
     public interface UpdateCommentListener{
